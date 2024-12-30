@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>github.ReqresFofwardApi</groupId>
-    <artifactId>ReqresFofwardApi</artifactId>
+    <artifactId>ReqresForwardApi</artifactId>
     <version>1.0</version>
 
     <properties>
