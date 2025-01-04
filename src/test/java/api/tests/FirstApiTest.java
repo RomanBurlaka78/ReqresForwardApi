@@ -2,11 +2,10 @@ package api.tests;
 
 import api.base.Specifications;
 import api.pojo.CreateSingleUserPojo;
-import api.pojo.ResponseSingleUserPojo;
+import api.pojo.SingleUserPojo;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
@@ -63,7 +62,7 @@ public class FirstApiTest {
     public void testPostUser() {
         CreateSingleUserPojo postBody = new CreateSingleUserPojo("morpheus", "leader");
 
-        ResponseSingleUserPojo response = given()
+        SingleUserPojo response = given()
                 .when().log().all()
                 .contentType(ContentType.JSON)
                 .body(postBody)
@@ -71,7 +70,7 @@ public class FirstApiTest {
                 .then().log().all()
                 .body("name", notNullValue())
                 .statusCode(201)
-                .extract().as(ResponseSingleUserPojo.class);
+                .extract().as(SingleUserPojo.class);
 
         //Should be assertions
 
@@ -79,9 +78,9 @@ public class FirstApiTest {
 
     @Test
     public void testPostUserResponse() {
-        ResponseSingleUserPojo postBody = new ResponseSingleUserPojo("morpheus", "leader");
+        SingleUserPojo postBody = new SingleUserPojo("morpheus", "leader");
 
-        ResponseSingleUserPojo response = given()
+        SingleUserPojo response = given()
                 .when().log().all()
                 .contentType(ContentType.JSON)
                 .body(postBody)
@@ -89,7 +88,7 @@ public class FirstApiTest {
                 .then().log().all()
                 .body("name", notNullValue())
                 .statusCode(201)
-                .extract().as(ResponseSingleUserPojo.class);
+                .extract().as(SingleUserPojo.class);
 
         //Should be assertions
 
