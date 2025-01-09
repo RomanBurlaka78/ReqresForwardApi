@@ -3,39 +3,36 @@ package api.tests.dima;
 import api.base.Specifications;
 import api.pojo.Registration;
 import api.pojo.SingleUserPojo;
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 public class RegresTest {
 
-    protected Specifications requestSpec = new Specifications();
-    protected RequestSpecification spec;
+    protected Specifications specifications = new Specifications();
+    protected RequestSpecification requestSpecification;
+    protected ResponseSpecification responseSpecification;
 
     protected SingleUserPojo reqwestSingleUserPojo = new SingleUserPojo("Neo", "Matrica pioner");
     protected Registration registration = new Registration("eve.holt@reqres.in", "pistolet");
 
 
     {
-        spec = requestSpec.setupRequest();
-
+        requestSpecification = specifications.setupRequest();
+        responseSpecification = specifications.setupResponse();
     }
 
     @Test
     public void testListOfUsersIdExisted(){
 
-        spec.queryParam("page", 2);
-        Response response = given(spec).
-                when().
+        requestSpecification.queryParam("page", 2);
+        Response response = given(requestSpecification,responseSpecification).
                 get("/api/users").
                 then().
                 statusCode(200).
@@ -49,8 +46,7 @@ public class RegresTest {
     @Test
     public void testVerifyUsersId(){
 
-        int idOfUser = given(spec).
-                when().
+        int idOfUser = given(requestSpecification,responseSpecification).
                 get("/api/users/2").jsonPath().getInt("data.id");
         Assert.assertEquals(idOfUser,2);
     }
@@ -58,13 +54,13 @@ public class RegresTest {
     @Test(description = "use String class for verification")
     public void testUserIsNotExist(){
         String expectedResult = "{}";
-        String response = given(spec).
+        String response = given(requestSpecification).
                 when().
-                get("/api/users/23").
+                    get("/api/users/23").
                 then().
-                assertThat().
-                statusCode(404).
-                extract().asString();
+                    assertThat().
+                    statusCode(404).
+                    extract().asString();
 
         Assert.assertEquals(response, expectedResult);
     }
@@ -73,7 +69,7 @@ public class RegresTest {
     public void testUserIsNotExistJson() {
 
         JSONObject jsonpObject = new JSONObject();
-        Response response = given(spec).
+        Response response = given(requestSpecification).
                 when().
                 get("/api/users/23").
                 then().
@@ -86,9 +82,9 @@ public class RegresTest {
 
     @Test
     public void testGetListOfResourses(){
-        spec.pathParam("resourse", "unknown");
+        requestSpecification.pathParam("resourse", "unknown");
 
-        Response response = given(spec).
+        Response response = given(requestSpecification).
                 when().
                 get("/api/{resourse}").
                 then().
@@ -100,9 +96,9 @@ public class RegresTest {
 
     @Test
     public void testSingleResourceId(){
-        spec.pathParam("resourse", "unknown");
+        requestSpecification.pathParam("resourse", "unknown");
         //spec.queryParam("id",2);
-        int idOfTheResourse = given(spec).
+        int idOfTheResourse = given(requestSpecification).
                 when().
                 get("/api/{resourse}/2").
                 jsonPath().
@@ -113,10 +109,10 @@ public class RegresTest {
     @Test
     public void testSingleResourceNotFaund(){
 
-        spec.pathParam("resourse", "unknown");
+        requestSpecification.pathParam("resourse", "unknown");
 
         JSONObject jsonObject = new JSONObject();
-        Response response = given(spec).
+        Response response = given(requestSpecification).
                 when().
                 get("/api/{resourse}/23").
                 then().
@@ -129,12 +125,10 @@ public class RegresTest {
     @Test
     public void testIdOfCreatedEntry(){
 
-        spec.body(reqwestSingleUserPojo);
-        SingleUserPojo responseSingleUserPojo = given(spec).
-                when().
+        requestSpecification.body(reqwestSingleUserPojo);
+        SingleUserPojo responseSingleUserPojo = given(requestSpecification,responseSpecification).
                 post("/api/users").
                 then().
-                log().all().
                 statusCode(201).
                 extract().as(SingleUserPojo.class);
 
@@ -143,12 +137,24 @@ public class RegresTest {
     }
 
     @Test
+    public void testIdOfCreatedEntryInAResponseBody(){
+
+        requestSpecification.body(reqwestSingleUserPojo);
+        given(requestSpecification).
+                when().
+                post("/api/users").
+                then().
+                statusCode(201).
+                body("name",equalTo("Neo"));
+    }
+
+    @Test
     public void testOfEntrysNameUpdated(){
 
         reqwestSingleUserPojo.setName("Trinity");
         reqwestSingleUserPojo.setJob("rebel hero");
-        spec.body(reqwestSingleUserPojo);
-        SingleUserPojo responseSingleUserPojo = given(spec).
+        requestSpecification.body(reqwestSingleUserPojo);
+        SingleUserPojo responseSingleUserPojo = given(requestSpecification).
                 when().
                 put("/api/users/2").
                 then().
@@ -162,7 +168,7 @@ public class RegresTest {
 
     @Test
     public void deleteEntry(){
-        Response response = given(spec).
+        Response response = given(requestSpecification).
                 when().
                 delete("/api/users/2").
                 then().
@@ -176,8 +182,8 @@ public class RegresTest {
     @Test
     public void testRegisteredToken(){
         String expectedToken = "QpwL5tke4Pnpja7X4";
-        spec.body(registration);
-        String responseToken = given(spec).
+        requestSpecification.body(registration);
+        String responseToken = given(requestSpecification).
                 when().
                 post("/api/register").
                 then().
