@@ -25,6 +25,12 @@ public class SingleUserPojo {
         this.job = job;
     }
 
+    public SingleUserPojo(String name, String job, String createdAt) {
+        this.name = name;
+        this.job = job;
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "SingleUserPojo{" +
