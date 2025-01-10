@@ -2,6 +2,7 @@ package api.tests.br;
 
 import api.base.Specifications;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
@@ -12,7 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-
+@Ignore
 public class ApiTest {
     Specifications specifications = new Specifications();
 

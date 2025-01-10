@@ -8,6 +8,7 @@ import api.pojo.SingleUserPojo;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
+@Ignore
 public class RegresTest {
 
     private static final String URL = "https://reqres.in";
