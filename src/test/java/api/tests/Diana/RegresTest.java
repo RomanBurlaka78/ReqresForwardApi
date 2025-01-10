@@ -1,8 +1,8 @@
 package api.tests.Diana;
 
-import com.beust.ah.A;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
+import api.base.Specifications;
+import api.pojo.*;
+
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Ignore;
@@ -11,161 +11,163 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.rootPath;
 import static org.hamcrest.Matchers.*;
 
 @Ignore
 public class RegresTest {
 
-    private static final String URL = "https://reqres.in";
+    Specifications spec = new Specifications();
+    protected SingleUserPojo reqwestSUP = new SingleUserPojo("morpheus", "leader", "2025-01-09T12:34:34.000Z");
+    protected Registration registration = new Registration("eve.holt@reqres.in", "pistol");
+    protected UserPojo singleuserP = new UserPojo(2, "janet.weaver@reqres.in", "Janet", "Weaver", "https://reqres.in/img/faces/2-image.jpg");
 
 
     @Test
     public void testVerifySingleUser() {
-        Response singleUsers = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .get(URL + "/api/users/2")
-                .then().log().all()
-                .statusCode(200)
-                .extract().response();
 
-        Assert.assertEquals(singleUsers.jsonPath().getInt("data.id"), 2);
-        Assert.assertEquals(singleUsers.jsonPath().getString("data.first_name"), "Janet");
-        Assert.assertEquals(singleUsers.jsonPath().getString("data.last_name"), "Weaver");
-        Assert.assertEquals(singleUsers.jsonPath().getString("data.email"), "janet.weaver@reqres.in");
+        spec.installSpec();
+        UserPojo singleUsers = given()
+                .when()
+                .body(singleuserP)
+                .get("/api/users/2")
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject("data", UserPojo.class);
+
+        Assert.assertEquals(singleUsers.getId(), 2);
+        Assert.assertEquals(singleUsers.getFirst_name(), "Janet");
+        Assert.assertEquals(singleUsers.getLast_name(), "Weaver");
+        Assert.assertEquals(singleUsers.getEmail(), "janet.weaver@reqres.in");
+        Assert.assertEquals(singleUsers.getAvatar(), "https://reqres.in/img/faces/2-image.jpg");
 
     }
 
     @Test
     public void testSingleUserNotExist() {
-        RestAssured.given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .get(URL + "/api/users/23")
-                .then().log().all()
+        spec.installSpec();
+        String response = given()
+                .when()
+                .get("/api/users/23")
+                .then()
                 .statusCode(404)
-                .body(equalTo("{}"))
-                .extract().response();
+                .extract().asString();
+
+        Assert.assertEquals(response, "{}");
 
     }
 
     @Test
     public void testGetListOfResource() {
-       Response response = given()
-               .when().log().all()
-                .contentType(ContentType.JSON)
-                .get(URL + "/api/unknown")
-                .then().log().all()
-                .statusCode(200)
-                .extract().response();
+        spec.installSpec();
 
-       Assert.assertEquals(List.of(1,2,3,4,5,6),response.jsonPath().getList("data.id"));
+        List<PojoResource> resources = given()
+                .when()
+                .get("/api/unknown")
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList("data", PojoResource.class);
+
+        Assert.assertEquals(resources.get(2).color, "#BF1932");
+        Assert.assertEquals(resources.get(2).id, 3);
+        Assert.assertEquals(resources.get(2).name, "true red");
+        Assert.assertEquals(resources.get(2).pantone_value, "19-1664");
+        Assert.assertEquals(resources.get(2).year, 2002);
+
     }
 
     @Test
     public void testGetSingleResourceId() {
-        Response response = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .get(URL + "/api/unknown/2")
-                .then().log().all()
-                .statusCode(200)
-                //.body("data.id", equalTo(2))
-                .extract().response();
+        spec.installSpec();
 
-        Assert.assertEquals(response.jsonPath().getString("data.id"), "2");
+        PojoResource resp = given()
+                .when()
+                .get("/api/unknown/2")
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject("data", PojoResource.class);
+
+        Assert.assertEquals(resp.getId(), 2);
+        Assert.assertEquals(resp.getName(), "fuchsia rose");
+        Assert.assertEquals(resp.getYear(), 2001);
+        Assert.assertEquals(resp.getColor(), "#C74375");
+        Assert.assertEquals(resp.getPantone_value(), "17-2031");
+
     }
 
     @Test
     public void testSingleResourceIdNotExist() {
-        Response response = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .get(URL + "/api/unknown/23")
-                .then().log().all()
-                .statusCode(404)
-                .extract().response();
+        spec.installSpec();
 
+        String response = given()
+                .when()
+                .get("/api/unknown/23")
+                .then()
+                .statusCode(404)
+                .extract().asString();
+
+        Assert.assertEquals(response,"{}");
     }
 
     @Test
     public void testCreateUser() {
+        spec.installSpec();
 
-        String body = """
-               {
-               "name": "morpheus",
-               "job": "leader"
-               }
-                """;
-
-        Response response = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .body(body)
-                .post(URL + "/api/users")
-                .then().log().all()
+        SingleUserPojo response = given()
+                .when()
+                .body(reqwestSUP)
+                .post("/api/users")
+                .then()
                 .statusCode(201)
-//                .body("name" , equalTo("morpheus"))
-//                .body("job", equalTo("leader"))
-                .extract().response();
+                .extract().as(SingleUserPojo.class);
 
-        Assert.assertEquals(response.jsonPath().getString("name"), "morpheus");
-        Assert.assertEquals(response.jsonPath().getString("job"), "leader");
+        Assert.assertEquals(response.getName(), "morpheus");
+        Assert.assertEquals(response.getJob(), "leader");
     }
 
     @Test
     public void testUpdateUser() {
 
-        String body = """
-                {
-                "name": "morpheus",
-                "job": "zion resident"
-                 }
-                """;
+        spec.installSpec();
+        reqwestSUP.setJob("zion resident");
 
-        Response response = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .body(body)
-                .put(URL + "/api/users/2")
-                .then().log().all()
+        SingleUserPojo response = given()
+                .when()
+                .body(reqwestSUP)
+                .put("/api/users/2")
+                .then()
                 .statusCode(200)
-                .extract().response();
+                .extract().as(SingleUserPojo.class);
 
-        Assert.assertEquals(response.jsonPath().getString("name"), "morpheus");
-        Assert.assertEquals(response.jsonPath().getString("job"), "zion resident");
+        Assert.assertEquals(response.getJob(), reqwestSUP.getJob());
+        Assert.assertEquals(response.getName(), reqwestSUP.getName());
     }
 
     @Test
     public void testUpdateUserPatch() {
 
-        String body = """
-                {
-                "name": "morpheus",
-                "job": "zion resident"
-                  }
-                """;
+        spec.installSpec();
+        reqwestSUP.setCreatedAt("2025-01-09T12:30:37.398Z");
 
-        Response response = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .body(body)
-                .patch(URL + "/api/users/2")
-                .then().log().all()
+        SingleUserPojo response = given()
+                .when()
+                .body(reqwestSUP)
+                .patch("/api/users/2")
+                .then()
                 .statusCode(200)
-                .extract().response();
+                .extract().as(SingleUserPojo.class);
 
-        Assert.assertEquals(response.jsonPath().getString("name"), "morpheus");
-        Assert.assertEquals(response.jsonPath().getString("job"), "zion resident");
+        Assert.assertEquals(response.getCreatedAt(), reqwestSUP.getCreatedAt());
     }
     @Test
     public void testDeleteUser() {
 
+        spec.installSpec();
+
         Response response = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .delete(URL + "/api/users/2")
-                .then().log().all()
+                .when()
+                .delete("/api/users/2")
+                .then()
                 .statusCode(204)
                 .extract().response();
 
@@ -173,96 +175,85 @@ public class RegresTest {
     }
 
     @Test
-    public void testRegisterUser() {
-        String body = """
-                {
-                "email": "eve.holt@reqres.in",
-                "password": "pistol"
-                }
-                """;
+    public void testRegisterUserSuccessful() {
 
-        Response response = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .body(body)
-                .post(URL + "/api/register")
-                .then().log().all()
+        spec.installSpec();
+        RegisterPojo register = given()
+                .when()
+                .body(registration)
+                .post("/api/register")
+                .then()
                 .statusCode(200)
-                .extract().response();
+                .extract().body().jsonPath().getObject(rootPath, RegisterPojo.class);
 
-        Assert.assertEquals(response.jsonPath().getString("id"), "4");
-        Assert.assertEquals(response.jsonPath().getString("token"), "QpwL5tke4Pnpja7X4");
+        Assert.assertEquals(register.getToken(), "QpwL5tke4Pnpja7X4");
+        Assert.assertEquals(register.getId(), 4);
     }
 
     @Test
     public void testRegisterUserUnsuccessful() {
-        String body = """
-                {
-                     "email": "sydney@fife"
-                 }
-                """;
 
-        Response response = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .body(body)
-                .post(URL + "/api/register")
-                .then().log().all()
+        spec.installSpec();
+        registration.setEmail("sydney@fife");
+        registration.setPassword("");
+
+        ErrorPojo error = given()
+                .when()
+                .body(registration)
+                .post("/api/register")
+                .then()
                 .statusCode(400)
-                .extract().response();
+                .extract().body().jsonPath().getObject(rootPath, ErrorPojo.class);
 
-        Assert.assertEquals(response.jsonPath().getString("error"), "Missing password");
+        Assert.assertEquals(error.getError(), "Missing password");
+
     }
 
     @Test
     public void testUserLoginRegister() {
-        String body = """
-                {
-                      "email": "eve.holt@reqres.in",
-                      "password": "cityslicka"
-                  }
-                """;
 
-        Response response = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .body(body)
-                .post(URL + "/api/login")
-                .then().log().all()
+        spec.installSpec();
+        registration.setEmail("eve.holt@reqres.in");
+        registration.setPassword("cityslicka");
+
+        TokenPojo token = given()
+                .when()
+                .body(registration)
+                .post("/api/login")
+                .then()
                 .statusCode(200)
-                .extract().response();
+                .extract().body().jsonPath().getObject(rootPath, TokenPojo.class);
 
-        Assert.assertEquals(response.jsonPath().getString("token"), "QpwL5tke4Pnpja7X4");
+        Assert.assertEquals(token.getToken(), "QpwL5tke4Pnpja7X4");
     }
 
     @Test
     public void testUserLoginRegisterUnsuccessful() {
-        String body = """
-                {
-                       "email": "peter@klaven"
-                   }
-                """;
 
-        Response response = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .body(body)
-                .post(URL + "/api/login")
-                .then().log().all()
+        spec.installSpec();
+        registration.setEmail("peter@klaven");
+        registration.setPassword("");
+
+        ErrorPojo response = given()
+                .when()
+                .body(registration)
+                .post("/api/login")
+                .then()
                 .statusCode(400)
-                .extract().response();
+                .extract().body().jsonPath().getObject(rootPath, ErrorPojo.class);
 
-        Assert.assertEquals(response.jsonPath().getString("error"), "Missing password");
+        Assert.assertEquals(response.getError(), "Missing password");
     }
 
     @Test
     public void testDelayedResponse() {
 
+        spec.installSpec();
+
         Response response = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
-                .get(URL + "/api/users?delay=3")
-                .then().log().all()
+                .when()
+                .get("/api/users?delay=3")
+                .then()
                 .statusCode(200)
                 .time(lessThan(10000L))
                 .extract().response();
