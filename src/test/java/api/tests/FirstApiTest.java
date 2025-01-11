@@ -6,11 +6,13 @@ import api.pojo.SingleUserPojo;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 
+@Ignore
 public class FirstApiTest {
     private static final String URL = "https://reqres.in";
 

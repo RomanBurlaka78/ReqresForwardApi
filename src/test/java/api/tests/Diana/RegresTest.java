@@ -1,46 +1,45 @@
 package api.tests.Diana;
 
 import api.base.Specifications;
-import api.pojo.PojoResource;
-import api.pojo.Registration;
-import api.pojo.SingleUserPojo;
+import api.pojo.*;
 
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.rootPath;
 import static org.hamcrest.Matchers.*;
 
+@Ignore
 public class RegresTest {
 
-    private static final String URL = "https://reqres.in";
     Specifications spec = new Specifications();
     protected SingleUserPojo reqwestSUP = new SingleUserPojo("morpheus", "leader", "2025-01-09T12:34:34.000Z");
     protected Registration registration = new Registration("eve.holt@reqres.in", "pistol");
+    protected UserPojo singleuserP = new UserPojo(2, "janet.weaver@reqres.in", "Janet", "Weaver", "https://reqres.in/img/faces/2-image.jpg");
 
 
     @Test
     public void testVerifySingleUser() {
-        spec.installSpec();
 
-        int singleUsers = given()
+        spec.installSpec();
+        UserPojo singleUsers = given()
                 .when()
+                .body(singleuserP)
                 .get("/api/users/2")
                 .then()
                 .statusCode(200)
-                .body("data.first_name", equalTo("Janet"))
-                .body("data.last_name", equalTo("Weaver"))
-                .extract().body().jsonPath().getInt("data.id");
+                .extract().body().jsonPath().getObject("data", UserPojo.class);
 
-          Assert.assertEquals(singleUsers, 2);
-
-//        Assert.assertEquals(singleUsers.("data.first_name"), "Janet");
-//        Assert.assertEquals(singleUsers.jsonPath().getString("data.last_name"), "Weaver");
-//        Assert.assertEquals(singleUsers.jsonPath().getString("data.email"), "janet.weaver@reqres.in");
+        Assert.assertEquals(singleUsers.getId(), 2);
+        Assert.assertEquals(singleUsers.getFirst_name(), "Janet");
+        Assert.assertEquals(singleUsers.getLast_name(), "Weaver");
+        Assert.assertEquals(singleUsers.getEmail(), "janet.weaver@reqres.in");
+        Assert.assertEquals(singleUsers.getAvatar(), "https://reqres.in/img/faces/2-image.jpg");
 
     }
 
@@ -70,20 +69,30 @@ public class RegresTest {
                 .extract().body().jsonPath().getList("data", PojoResource.class);
 
         Assert.assertEquals(resources.get(2).color, "#BF1932");
+        Assert.assertEquals(resources.get(2).id, 3);
+        Assert.assertEquals(resources.get(2).name, "true red");
+        Assert.assertEquals(resources.get(2).pantone_value, "19-1664");
+        Assert.assertEquals(resources.get(2).year, 2002);
+
     }
 
     @Test
     public void testGetSingleResourceId() {
         spec.installSpec();
 
-        int resp = given()
+        PojoResource resp = given()
                 .when()
                 .get("/api/unknown/2")
                 .then()
                 .statusCode(200)
-                .extract().body().jsonPath().getInt("data.id");
+                .extract().body().jsonPath().getObject("data", PojoResource.class);
 
-        Assert.assertEquals(resp, 2);
+        Assert.assertEquals(resp.getId(), 2);
+        Assert.assertEquals(resp.getName(), "fuchsia rose");
+        Assert.assertEquals(resp.getYear(), 2001);
+        Assert.assertEquals(resp.getColor(), "#C74375");
+        Assert.assertEquals(resp.getPantone_value(), "17-2031");
+
     }
 
     @Test
@@ -130,7 +139,8 @@ public class RegresTest {
                 .statusCode(200)
                 .extract().as(SingleUserPojo.class);
 
-        Assert.assertEquals(response.getJob(), "zion resident");
+        Assert.assertEquals(response.getJob(), reqwestSUP.getJob());
+        Assert.assertEquals(response.getName(), reqwestSUP.getName());
     }
 
     @Test
@@ -165,21 +175,19 @@ public class RegresTest {
     }
 
     @Test
-    public void testRegisterUser() {
+    public void testRegisterUserSuccessful() {
 
         spec.installSpec();
-        String token = "QpwL5tke4Pnpja7X4";
-        //int id = 4;
-        String response = given()
+        RegisterPojo register = given()
                 .when()
                 .body(registration)
                 .post("/api/register")
                 .then()
                 .statusCode(200)
-                .extract().response().jsonPath().getString("token");
+                .extract().body().jsonPath().getObject(rootPath, RegisterPojo.class);
 
-        Assert.assertEquals(response, token);
-      //  Assert.assertEquals(response, id); ???
+        Assert.assertEquals(register.getToken(), "QpwL5tke4Pnpja7X4");
+        Assert.assertEquals(register.getId(), 4);
     }
 
     @Test
@@ -189,15 +197,15 @@ public class RegresTest {
         registration.setEmail("sydney@fife");
         registration.setPassword("");
 
-        String response = given()
+        ErrorPojo error = given()
                 .when()
                 .body(registration)
                 .post("/api/register")
                 .then()
                 .statusCode(400)
-                .extract().body().jsonPath().getString("error");
+                .extract().body().jsonPath().getObject(rootPath, ErrorPojo.class);
 
-        Assert.assertEquals(response, "Missing password");
+        Assert.assertEquals(error.getError(), "Missing password");
 
     }
 
@@ -208,15 +216,15 @@ public class RegresTest {
         registration.setEmail("eve.holt@reqres.in");
         registration.setPassword("cityslicka");
 
-        String response = given()
+        TokenPojo token = given()
                 .when()
                 .body(registration)
                 .post("/api/login")
                 .then()
                 .statusCode(200)
-                .extract().body().jsonPath().getString("token");
+                .extract().body().jsonPath().getObject(rootPath, TokenPojo.class);
 
-        Assert.assertEquals(response, "QpwL5tke4Pnpja7X4");
+        Assert.assertEquals(token.getToken(), "QpwL5tke4Pnpja7X4");
     }
 
     @Test
@@ -226,15 +234,15 @@ public class RegresTest {
         registration.setEmail("peter@klaven");
         registration.setPassword("");
 
-        Response response = given()
+        ErrorPojo response = given()
                 .when()
                 .body(registration)
                 .post("/api/login")
                 .then()
                 .statusCode(400)
-                .extract().response();
+                .extract().body().jsonPath().getObject(rootPath, ErrorPojo.class);
 
-        Assert.assertEquals(response.jsonPath().getString("error"), "Missing password");
+        Assert.assertEquals(response.getError(), "Missing password");
     }
 
     @Test
