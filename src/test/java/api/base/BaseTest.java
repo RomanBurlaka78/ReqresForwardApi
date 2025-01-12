@@ -11,12 +11,12 @@ import java.lang.reflect.Method;
 public abstract class BaseTest {
 
     public static Specifications specifications = new Specifications();
-    public static RequestSpecification request;
-    public static ResponseSpecification response;
+    public static RequestSpecification requestSpec;
+    public static ResponseSpecification responseSpec;
 
     public static void spec(){
-        request = specifications.setupRequest();
-        response = specifications.setupResponse();
+        requestSpec = specifications.setupRequest();
+        responseSpec = specifications.setupResponse();
     }
 
     @BeforeMethod
