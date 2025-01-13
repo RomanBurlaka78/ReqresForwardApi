@@ -14,7 +14,7 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.rootPath;
 import static org.hamcrest.Matchers.*;
 
-@Ignore
+
 public class RegresTest {
 
     Specifications spec = new Specifications();
@@ -184,7 +184,7 @@ public class RegresTest {
                 .post("/api/register")
                 .then()
                 .statusCode(200)
-                .extract().body().jsonPath().getObject(rootPath, RegisterPojo.class);
+                .extract().body().jsonPath().getObject(".", RegisterPojo.class);
 
         Assert.assertEquals(register.getToken(), "QpwL5tke4Pnpja7X4");
         Assert.assertEquals(register.getId(), 4);
