@@ -1,15 +1,22 @@
 package api.tests.dima;
 
 import api.base.Specifications;
+import api.pojo.RegisterPojo;
 import api.pojo.Registration;
 import api.pojo.SingleUserPojo;
+import io.restassured.module.jsv.JsonSchemaValidator;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -33,9 +40,8 @@ public class RegresTest {
     @Test
     public void testListOfUsersIdExisted(){
 
-        requestSpecification.queryParam("page", 2);
         Response response = given(requestSpecification,responseSpecification).
-                get("/api/users").
+                get("/api/users?page=2").
                 then().
                 statusCode(200).
                 extract().
@@ -43,6 +49,17 @@ public class RegresTest {
 
         List <Integer> listOfUsersId = response.jsonPath().getList("data.id");
         Assert.assertEquals(List.of(7,8,9,10,11,12), listOfUsersId);
+    }
+
+    @Test
+    public void testListOfUsersIdExistedWithJsonScheema() throws IOException {
+
+        File file = new File("src/main/resources/JsonSchemaForListOfUsers.json");
+        String schema = FileUtils.readFileToString(file, "UTF-8");
+            given(requestSpecification,responseSpecification).
+                get("/api/users?page=2").
+            then().
+                body(JsonSchemaValidator.matchesJsonSchema(schema));
     }
 
     @Test
@@ -84,11 +101,10 @@ public class RegresTest {
 
     @Test
     public void testGetListOfResourses(){
-        requestSpecification.pathParam("resourse", "unknown");
 
         Response response = given(requestSpecification).
                 when().
-                get("/api/{resourse}").
+                get("/api/unknown").
                 then().
                 statusCode(200).
                 extract().response();
@@ -98,11 +114,10 @@ public class RegresTest {
 
     @Test
     public void testSingleResourceId(){
-        requestSpecification.pathParam("resourse", "unknown");
-        //spec.queryParam("id",2);
+
         int idOfTheResourse = given(requestSpecification).
                 when().
-                get("/api/{resourse}/2").
+                get("/api/unknown/2").
                 jsonPath().
                 getInt("data.id");
         Assert.assertEquals(idOfTheResourse, 2);
@@ -111,12 +126,9 @@ public class RegresTest {
     @Test
     public void testSingleResourceNotFaund(){
 
-        requestSpecification.pathParam("resourse", "unknown");
-
         JSONObject jsonObject = new JSONObject();
-        Response response = given(requestSpecification).
-                when().
-                get("/api/{resourse}/23").
+        Response response = given(requestSpecification,responseSpecification).
+                get("/api/unknown/23").
                 then().
                 assertThat().
                 statusCode(404).
@@ -127,12 +139,14 @@ public class RegresTest {
     @Test
     public void testIdOfCreatedEntry(){
 
-        requestSpecification.body(reqwestSingleUserPojo);
-        SingleUserPojo responseSingleUserPojo = given(requestSpecification,responseSpecification).
-                post("/api/users").
+        SingleUserPojo responseSingleUserPojo =
+                given(requestSpecification).
+                when().
+                    body(reqwestSingleUserPojo).
+                    post("/api/users").
                 then().
-                statusCode(201).
-                extract().as(SingleUserPojo.class);
+                    statusCode(201).
+                    extract().as(SingleUserPojo.class);
 
         Assert.assertEquals(responseSingleUserPojo.getName(), reqwestSingleUserPojo.getName());
 
@@ -141,9 +155,9 @@ public class RegresTest {
     @Test
     public void testIdOfCreatedEntryInAResponseBody(){
 
-        requestSpecification.body(reqwestSingleUserPojo);
         given(requestSpecification).
                 when().
+                body(reqwestSingleUserPojo).
                 post("/api/users").
                 then().
                 statusCode(201).
@@ -155,9 +169,9 @@ public class RegresTest {
 
         reqwestSingleUserPojo.setName("Trinity");
         reqwestSingleUserPojo.setJob("rebel hero");
-        requestSpecification.body(reqwestSingleUserPojo);
         SingleUserPojo responseSingleUserPojo = given(requestSpecification).
                 when().
+                body(reqwestSingleUserPojo).
                 put("/api/users/2").
                 then().
                 log().all().
@@ -170,8 +184,8 @@ public class RegresTest {
 
     @Test
     public void deleteEntry(){
-        Response response = given(requestSpecification).
-                when().
+        Response response = given(requestSpecification,responseSpecification).
+                //when().
                 delete("/api/users/2").
                 then().
                 assertThat().
@@ -184,13 +198,71 @@ public class RegresTest {
     @Test
     public void testRegisteredToken(){
         String expectedToken = "QpwL5tke4Pnpja7X4";
-        requestSpecification.body(registration);
         String responseToken = given(requestSpecification).
                 when().
+                body(registration).
                 post("/api/register").
                 then().
                 statusCode(200).
                 extract().response().jsonPath().getString("token");
         Assert.assertEquals(responseToken, expectedToken);
+    }
+
+    @Test(description = "создал файл, куда записал JSON, создал File подставив путь к файлу")
+    public void testRegisterUnsuccessfulToken(){
+        String expectedMessage = "Missing password";
+        File file = new File("src/main/resources/not_valid_registration.json");
+
+        String responseMessage =
+                given(requestSpecification).
+                    body(file).
+                when().
+                    post("/api/register").
+                then().
+                    statusCode(400).
+                    extract().response().jsonPath().getString("error");
+        Assert.assertEquals(responseMessage, expectedMessage);
+    }
+
+    @Test
+    public void testTokenForLoginSuccesful(){
+
+        String expectedToken = "QpwL5tke4Pnpja7X4";
+
+                given(requestSpecification).
+                when().
+                    body(new Registration("eve.holt@reqres.in", "cityslicka")).
+                    post("api/login").
+                then().
+                    statusCode(200).
+                    body("token",equalTo(expectedToken));
+
+    }
+
+    @Test()
+    public void testErrorMessageOfUnsuccessfulLogin(){
+        String expectedMessage = "Missing password";
+        File file = new File("src/main/resources/not_valid_registration.json");
+
+        String responseMessage =
+                given(requestSpecification).
+                        body(file).
+                        when().
+                        post("/api/register").
+                        then().
+                        statusCode(400).
+                        extract().response().jsonPath().getString("error");
+        Assert.assertEquals(responseMessage, expectedMessage);
+    }
+
+    @Test
+    public void delateResponse(){
+        Response response =
+                given(requestSpecification).
+                when().
+                get("/api/users?delay=3").
+                then().
+                    extract().response();
+        System.out.println(response.asPrettyString());
     }
 }
