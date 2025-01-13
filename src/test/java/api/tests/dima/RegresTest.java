@@ -4,16 +4,19 @@ import api.base.Specifications;
 import api.pojo.RegisterPojo;
 import api.pojo.Registration;
 import api.pojo.SingleUserPojo;
+import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -46,6 +49,17 @@ public class RegresTest {
 
         List <Integer> listOfUsersId = response.jsonPath().getList("data.id");
         Assert.assertEquals(List.of(7,8,9,10,11,12), listOfUsersId);
+    }
+
+    @Test
+    public void testListOfUsersIdExistedWithJsonScheema() throws IOException {
+
+        File file = new File("src/main/resources/JsonSchemaForListOfUsers.json");
+        String schema = FileUtils.readFileToString(file, "UTF-8");
+            given(requestSpecification,responseSpecification).
+                get("/api/users?page=2").
+            then().
+                body(JsonSchemaValidator.matchesJsonSchema(schema));
     }
 
     @Test
