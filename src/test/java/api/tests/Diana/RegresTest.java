@@ -1,6 +1,6 @@
 package api.tests.Diana;
 
-import api.base.Specifications;
+import api.base.BaseTest;
 import api.pojo.*;
 
 import io.restassured.response.Response;
@@ -9,14 +9,11 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.rootPath;
+import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 
-public class RegresTest {
-
-    Specifications spec = new Specifications();
+public class RegresTest extends BaseTest {
     protected SingleUserPojo reqwestSUP = new SingleUserPojo("morpheus", "leader", "2025-01-09T12:34:34.000Z");
     protected Registration registration = new Registration("eve.holt@reqres.in", "pistol");
     protected UserPojo singleuserP = new UserPojo(2, "janet.weaver@reqres.in", "Janet", "Weaver", "https://reqres.in/img/faces/2-image.jpg");
@@ -25,10 +22,8 @@ public class RegresTest {
     @Test
     public void testVerifySingleUser() {
 
-        spec.installSpec();
-        UserPojo singleUsers = given()
-                .when()
-                .body(singleuserP)
+        UserPojo singleUsers = given(requestSpec.body(singleuserP),responseSpec)
+
                 .get("/api/users/2")
                 .then()
                 .statusCode(200)
@@ -39,14 +34,12 @@ public class RegresTest {
         Assert.assertEquals(singleUsers.getLast_name(), "Weaver");
         Assert.assertEquals(singleUsers.getEmail(), "janet.weaver@reqres.in");
         Assert.assertEquals(singleUsers.getAvatar(), "https://reqres.in/img/faces/2-image.jpg");
-
     }
 
     @Test
     public void testSingleUserNotExist() {
-        spec.installSpec();
-        String response = given()
-                .when()
+
+        String response = given(requestSpec,responseSpec)
                 .get("/api/users/23")
                 .then()
                 .statusCode(404)
@@ -58,33 +51,29 @@ public class RegresTest {
 
     @Test
     public void testGetListOfResource() {
-        spec.installSpec();
 
-        List<PojoResource> resources = given()
-                .when()
+        List<ResourcePojo> resources = given(requestSpec,responseSpec)
                 .get("/api/unknown")
                 .then()
                 .statusCode(200)
-                .extract().body().jsonPath().getList("data", PojoResource.class);
+                .extract().body().jsonPath().getList("data", ResourcePojo.class);
 
-        Assert.assertEquals(resources.get(2).color, "#BF1932");
-        Assert.assertEquals(resources.get(2).id, 3);
-        Assert.assertEquals(resources.get(2).name, "true red");
-        Assert.assertEquals(resources.get(2).pantone_value, "19-1664");
-        Assert.assertEquals(resources.get(2).year, 2002);
+        Assert.assertEquals(resources.get(2).getColor(), "#BF1932");
+        Assert.assertEquals(resources.get(2).getId(), 3);
+        Assert.assertEquals(resources.get(2).getName(), "true red");
+        Assert.assertEquals(resources.get(2).getPantone_value(), "19-1664");
+        Assert.assertEquals(resources.get(2).getYear(), 2002);
 
     }
 
     @Test
     public void testGetSingleResourceId() {
-        spec.installSpec();
 
-        PojoResource resp = given()
-                .when()
+        ResourcePojo resp = given(requestSpec,responseSpec)
                 .get("/api/unknown/2")
                 .then()
                 .statusCode(200)
-                .extract().body().jsonPath().getObject("data", PojoResource.class);
+                .extract().body().jsonPath().getObject("data", ResourcePojo.class);
 
         Assert.assertEquals(resp.getId(), 2);
         Assert.assertEquals(resp.getName(), "fuchsia rose");
@@ -96,10 +85,8 @@ public class RegresTest {
 
     @Test
     public void testSingleResourceIdNotExist() {
-        spec.installSpec();
 
-        String response = given()
-                .when()
+        String response = given(requestSpec,responseSpec)
                 .get("/api/unknown/23")
                 .then()
                 .statusCode(404)
@@ -110,11 +97,8 @@ public class RegresTest {
 
     @Test
     public void testCreateUser() {
-        spec.installSpec();
 
-        SingleUserPojo response = given()
-                .when()
-                .body(reqwestSUP)
+        SingleUserPojo response = given(requestSpec.body(reqwestSUP),responseSpec)
                 .post("/api/users")
                 .then()
                 .statusCode(201)
@@ -127,12 +111,9 @@ public class RegresTest {
     @Test
     public void testUpdateUser() {
 
-        spec.installSpec();
         reqwestSUP.setJob("zion resident");
 
-        SingleUserPojo response = given()
-                .when()
-                .body(reqwestSUP)
+        SingleUserPojo response = given(requestSpec.body(reqwestSUP),responseSpec)
                 .put("/api/users/2")
                 .then()
                 .statusCode(200)
@@ -145,12 +126,9 @@ public class RegresTest {
     @Test
     public void testUpdateUserPatch() {
 
-        spec.installSpec();
         reqwestSUP.setCreatedAt("2025-01-09T12:30:37.398Z");
 
-        SingleUserPojo response = given()
-                .when()
-                .body(reqwestSUP)
+        SingleUserPojo response = given(requestSpec.body(reqwestSUP),responseSpec)
                 .patch("/api/users/2")
                 .then()
                 .statusCode(200)
@@ -161,10 +139,7 @@ public class RegresTest {
     @Test
     public void testDeleteUser() {
 
-        spec.installSpec();
-
-        Response response = given()
-                .when()
+        Response response = given(requestSpec,responseSpec)
                 .delete("/api/users/2")
                 .then()
                 .statusCode(204)
@@ -176,10 +151,7 @@ public class RegresTest {
     @Test
     public void testRegisterUserSuccessful() {
 
-        spec.installSpec();
-        RegisterPojo register = given()
-                .when()
-                .body(registration)
+        RegisterPojo register = given(requestSpec.body(registration),responseSpec)
                 .post("/api/register")
                 .then()
                 .statusCode(200)
@@ -192,13 +164,10 @@ public class RegresTest {
     @Test
     public void testRegisterUserUnsuccessful() {
 
-        spec.installSpec();
         registration.setEmail("sydney@fife");
         registration.setPassword("");
 
-        ErrorPojo error = given()
-                .when()
-                .body(registration)
+        ErrorPojo error = given(requestSpec.body(registration),responseSpec)
                 .post("/api/register")
                 .then()
                 .statusCode(400)
@@ -211,13 +180,10 @@ public class RegresTest {
     @Test
     public void testUserLoginRegister() {
 
-        spec.installSpec();
         registration.setEmail("eve.holt@reqres.in");
         registration.setPassword("cityslicka");
 
-        TokenPojo token = given()
-                .when()
-                .body(registration)
+        TokenPojo token = given(requestSpec.body(registration),responseSpec)
                 .post("/api/login")
                 .then()
                 .statusCode(200)
@@ -229,13 +195,10 @@ public class RegresTest {
     @Test
     public void testUserLoginRegisterUnsuccessful() {
 
-        spec.installSpec();
         registration.setEmail("peter@klaven");
         registration.setPassword("");
 
-        ErrorPojo response = given()
-                .when()
-                .body(registration)
+        ErrorPojo response = given(requestSpec.body(registration),responseSpec)
                 .post("/api/login")
                 .then()
                 .statusCode(400)
@@ -247,10 +210,7 @@ public class RegresTest {
     @Test
     public void testDelayedResponse() {
 
-        spec.installSpec();
-
-        Response response = given()
-                .when()
+        Response response = given(requestSpec,responseSpec)
                 .get("/api/users?delay=3")
                 .then()
                 .statusCode(200)
