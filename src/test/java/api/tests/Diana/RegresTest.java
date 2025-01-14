@@ -170,7 +170,6 @@ public class RegresTest extends BaseTest {
                 .extract().body().jsonPath().getObject(rootPath, ErrorPojo.class);
 
         Assert.assertEquals(error.getError(), "Missing password");
-
     }
 
     @Test
@@ -212,7 +211,6 @@ public class RegresTest extends BaseTest {
                 .statusCode(200)
                 .time(lessThan(10000L))
                 .extract().response();
-
     }
 
 }
