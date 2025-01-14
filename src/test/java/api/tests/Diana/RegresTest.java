@@ -12,7 +12,6 @@ import java.util.List;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
-
 public class RegresTest extends BaseTest {
     protected SingleUserPojo reqwestSUP = new SingleUserPojo("morpheus", "leader", "2025-01-09T12:34:34.000Z");
     protected Registration registration = new Registration("eve.holt@reqres.in", "pistol");
