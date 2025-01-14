@@ -45,7 +45,6 @@ public class RegresTest extends BaseTest {
                 .extract().asString();
 
         Assert.assertEquals(response, "{}");
-
     }
 
     @Test
@@ -62,7 +61,6 @@ public class RegresTest extends BaseTest {
         Assert.assertEquals(resources.get(2).getName(), "true red");
         Assert.assertEquals(resources.get(2).getPantone_value(), "19-1664");
         Assert.assertEquals(resources.get(2).getYear(), 2002);
-
     }
 
     @Test
@@ -79,7 +77,6 @@ public class RegresTest extends BaseTest {
         Assert.assertEquals(resp.getYear(), 2001);
         Assert.assertEquals(resp.getColor(), "#C74375");
         Assert.assertEquals(resp.getPantone_value(), "17-2031");
-
     }
 
     @Test
