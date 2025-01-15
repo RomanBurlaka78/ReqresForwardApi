@@ -2,7 +2,7 @@ package api.tests.br;
 
 import api.base.Specifications;
 import api.pojo.DataListUsers;
-import io.qameta.allure.restassured.AllureRestAssured;
+//import io.qameta.allure.restassured.AllureRestAssured;
 import org.testng.Assert;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
@@ -24,7 +24,7 @@ public class ApiTest {
         specifications.installSpec();
 
         List<Object> itemList = given()
-                .filter(new AllureRestAssured())
+                //.filter(new AllureRestAssured())
                 .when()
                 .get("/api/users?page=2")
                 .then()
@@ -47,7 +47,7 @@ public class ApiTest {
     public void testGetListUserPojo() {
         specifications.installSpec();
         List<DataListUsers> itemList = given()
-                .filter(new AllureRestAssured())
+                //.filter(new AllureRestAssured())
                 .when()
                 .get("/api/users?page=2")
                 .then()
