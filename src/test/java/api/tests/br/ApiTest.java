@@ -15,7 +15,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Ignore
 public class ApiTest {
     Specifications specifications = new Specifications();
 
