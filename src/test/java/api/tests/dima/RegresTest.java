@@ -4,6 +4,7 @@ import api.base.Specifications;
 import api.pojo.RegisterPojo;
 import api.pojo.Registration;
 import api.pojo.SingleUserPojo;
+import io.qameta.allure.*;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -21,7 +22,7 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-@Ignore
+@Story("Class of tests for Regress API")
 public class RegresTest {
 
     protected Specifications specifications = new Specifications();
@@ -37,7 +38,39 @@ public class RegresTest {
         responseSpecification = specifications.setupResponse();
     }
 
+//    @Test
+//    public void allureStepExperement() throws IOException {
+//        step1();
+//        step2();
+//    }
+//
+//    @Step
+//    public void step1(){
+//        Response response = given(requestSpecification,responseSpecification).
+//                get("/api/users?page=2").
+//                then().
+//                statusCode(200).
+//                extract().
+//                response();
+//
+//        List <Integer> listOfUsersId = response.jsonPath().getList("data.id");
+//        Assert.assertEquals(List.of(7,8,9,10,11,12), listOfUsersId);
+//    }
+//
+//    @Step
+//    public void step2() throws IOException {
+//        File file = new File("src/main/resources/JsonSchemaForListOfUsers.json");
+//        String schema = FileUtils.readFileToString(file, "UTF-8");
+//        given(requestSpecification,responseSpecification).
+//                get("/api/users?page=2").
+//                then().
+//                body(JsonSchemaValidator.matchesJsonSchema(schema+1));
+//    }
+
     @Test
+    @Description("This is the first test with allure annotation")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("Dima")
     public void testListOfUsersIdExisted(){
 
         Response response = given(requestSpecification,responseSpecification).
@@ -49,6 +82,22 @@ public class RegresTest {
 
         List <Integer> listOfUsersId = response.jsonPath().getList("data.id");
         Assert.assertEquals(List.of(7,8,9,10,11,12), listOfUsersId);
+    }
+
+    @Test
+    public void experementWithAllureSteps() throws IOException {
+
+        File file = new File("src/main/resources/JsonSchemaForListOfUsers.json");
+        String schema = FileUtils.readFileToString(file, "UTF-8");
+        given(requestSpecification,responseSpecification).
+                get("/api/users?page=2").
+                then().
+                body(JsonSchemaValidator.matchesJsonSchema(schema));
+    }
+
+    @Step
+    public void step1() {
+        File file = new File("src/main/resources/JsonSchemaForListOfUsers.json");
     }
 
     @Test
