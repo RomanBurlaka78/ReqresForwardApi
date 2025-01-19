@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Run all the tests" configfailurepolicy="continue">
+
+    <test name="Diana`s regresAPI tests ">
+        <classes>
+            <class name="api.tests.Diana.RegresTest"></class>
+        </classes>
+    </test>
+
+    <test name="Margarita`s regresAPI tests ">
+        <classes>
+            <class name="api.tests.rita.ApiTest"></class>
+        </classes>
+    </test>
+
+    <test name="Sergey`s regresAPI tests ">
+        <classes>
+            <class name="api.tests.sergeyk.RegresWithPojoTest"></class>
+        </classes>
+    </test>
+</suite>
