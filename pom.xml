@@ -75,8 +75,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.aspectj</groupId>                    <!-- additional settings for Allure  -->
-            <artifactId>aspectjweaver</artifactId>
+            <groupId>org.aspectj</groupId>                    <!-- additional annotations for Allure  -->
+            <artifactId>aspectjweaver</artifactId>            <!-- @step, @attachment-->
             <version>${aspectj.version}</version>
         </dependency>
 
@@ -92,6 +92,9 @@
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
+                    <suiteXmlFiles>
+                        SingleTestRun.xml
+                    </suiteXmlFiles>
                 </configuration>
             </plugin>
 

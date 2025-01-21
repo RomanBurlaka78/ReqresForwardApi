@@ -86,13 +86,18 @@ public class RegresTest {
 
     @Test
     public void experementWithAllureSteps() throws IOException {
-
+        Allure.step("creating a file");
         File file = new File("src/main/resources/JsonSchemaForListOfUsers.json");
+
+        Allure.step("creating a String from a file");
         String schema = FileUtils.readFileToString(file, "UTF-8");
-        given(requestSpecification,responseSpecification).
-                get("/api/users?page=2").
-                then().
-                body(JsonSchemaValidator.matchesJsonSchema(schema));
+
+        Allure.step("rest assured validation", () -> {
+            given(requestSpecification, responseSpecification).
+                    get("/api/users?page=2").
+                    then().
+                    body(JsonSchemaValidator.matchesJsonSchema(schema));
+        });
     }
 
     @Step
