@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="1 набор тестов">
+
+    <test name="Получаем страницу со списком пользователей">
+        <groups>
+            <run>
+                <include name="users"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="api.tests.sergeyk.APITest"/>
+        </classes>
+    </test>
+
+    <test name="Получаем страницу с ресурсами">
+        <groups>
+            <run>
+                <include name="resource"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="api.tests.sergeyk.APITest"/>
+        </classes>
+    </test>
+
+</suite>
