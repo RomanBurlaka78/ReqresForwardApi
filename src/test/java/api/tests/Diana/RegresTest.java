@@ -1,6 +1,5 @@
 package api.tests.Diana;
 
-
 import api.base.BaseTest;
 import api.pojo.*;
 
