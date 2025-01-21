@@ -2,6 +2,10 @@ package api.tests.sergeyk;
 
 import api.base.BaseTest;
 import api.pojo.*;
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Owner;
+import io.qameta.allure.Story;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -15,6 +19,7 @@ import static io.restassured.RestAssured.rootPath;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThan;
 
+@Epic("Api tests")
 public class RegresWithPojoTest extends BaseTest {
 
     private static final String NAME = "morpheus";
@@ -26,6 +31,9 @@ public class RegresWithPojoTest extends BaseTest {
     private static final int NOT_USER_ID = 23;
 
     @Test
+    @Story("Get response")
+    @Description("Get list Of Users")
+    @Owner("SergeyK")
     public void testListUsers() {
 
         Response response = given(requestSpec.queryParam("page", 2), responseSpec)
@@ -48,6 +56,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Get response")
+    @Description("Get single user")
+    @Owner("SergeyK")
     public void testSingleUser() {
 
         UserPojo user = given(requestSpec.pathParam("id", USER_ID), responseSpec)
@@ -64,6 +75,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Get response")
+    @Description("Get single user not found")
+    @Owner("SergeyK")
     public void testSingleUserNotFound() {
 
         RestAssured.given(requestSpec.pathParam("id", NOT_USER_ID), responseSpec)
@@ -75,6 +89,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Get response")
+    @Description("Get list resource")
+    @Owner("SergeyK")
     public void testListResource() {
 
         Response response = given(requestSpec, responseSpec)
@@ -94,6 +111,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Get response")
+    @Description("Get single resource")
+    @Owner("SergeyK")
     public void testSingleResource() {
 
         ResourcePojo resource = given(requestSpec.pathParam("id", USER_ID), responseSpec)
@@ -110,6 +130,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Get response")
+    @Description("Get single resource not found")
+    @Owner("SergeyK")
     public void testSingleResourceNotFound() {
 
         RestAssured.given(requestSpec.pathParam("id", NOT_USER_ID), responseSpec)
@@ -121,6 +144,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Post response")
+    @Description("Create user")
+    @Owner("SergeyK")
     public void testCreate() {
 
         CreateSingleUserPojo userBody = new CreateSingleUserPojo(NAME, JOB);
@@ -136,6 +162,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Put response")
+    @Description("Update user")
+    @Owner("SergeyK")
     public void testUpdatePut() {
 
         CreateSingleUserPojo userBody = new CreateSingleUserPojo(NAME, PUT_JOB);
@@ -151,6 +180,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Patch response")
+    @Description("Update user")
+    @Owner("SergeyK")
     public void testUpdatePatch() {
 
         CreateSingleUserPojo userBody = new CreateSingleUserPojo(PATCH_NAME, PATCH_JOB);
@@ -166,6 +198,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Delete response")
+    @Description("Delete user")
+    @Owner("SergeyK")
     public void testDelete() {
 
         RestAssured.given(requestSpec.pathParam("id", USER_ID), responseSpec)
@@ -177,6 +212,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Post response")
+    @Description("Register successful")
+    @Owner("SergeyK")
     public void testRegisterSuccessful() {
 
         Registration registerBody = new Registration("eve.holt@reqres.in", "pistol");
@@ -192,6 +230,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Post response")
+    @Description("Register unsuccessful")
+    @Owner("SergeyK")
     public void testRegisterUnsuccessful() {
 
         Registration registerBody = new Registration("sydney@file", null);
@@ -206,6 +247,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Post response")
+    @Description("Login successful")
+    @Owner("SergeyK")
     public void testLoginSuccessful() {
 
         Registration login = new Registration("eve.holt@reqres.in", "cityslicka");
@@ -220,6 +264,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Post response")
+    @Description("Login unsuccessful")
+    @Owner("SergeyK")
     public void testLoginUnsuccessful() {
 
         Registration login = new Registration("peter@klaven", null);
@@ -234,6 +281,9 @@ public class RegresWithPojoTest extends BaseTest {
     }
 
     @Test
+    @Story("Get response")
+    @Description("Delayed response")
+    @Owner("SergeyK")
     public void testDelayedResponse() {
 
         RestAssured.given(requestSpec.queryParam("delay", 3), responseSpec)
