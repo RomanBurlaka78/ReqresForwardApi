@@ -44,6 +44,7 @@ public class RegresTest {
     @Description("Test all the user`s id that are presented on the page")
     @Severity(SeverityLevel.MINOR)
     @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testListOfUsersIdExisted(){
         Allure.step("get the response from API");
         Response response = given(requestSpecification,responseSpecification).
@@ -62,6 +63,7 @@ public class RegresTest {
     @Description("Test the json schema and response body with aid of Json validator")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testOfJsonScheemaWithResponseJsonBody() throws IOException {
 
         File file = new File("src/main/resources/JsonSchemaForListOfUsers.json");
@@ -76,6 +78,7 @@ public class RegresTest {
     @Description("Test the id of a sinle userr")
     @Severity(SeverityLevel.TRIVIAL)
     @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testVerifyUsersId(){
 
         int idOfUser = given(requestSpecification,responseSpecification).
@@ -87,6 +90,7 @@ public class RegresTest {
     @Description("Test that the user`s id is not exist")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testUserIsNotExist(){
         String expectedResult = "{}";
         String response = given(requestSpecification).
@@ -104,6 +108,7 @@ public class RegresTest {
     @Description("Test that the user`s id is not exist")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testUserIsNotExistJson() {
 
         JSONObject jsonpObject = new JSONObject();
@@ -122,6 +127,7 @@ public class RegresTest {
     @Description("Get all the id`s of users presented as a resources")
     @Severity(SeverityLevel.MINOR)
     @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testGetListOfResourses(){
 
         Response response = given(requestSpecification).
@@ -138,6 +144,7 @@ public class RegresTest {
     @Description("Test id`s of a single user")
     @Severity(SeverityLevel.MINOR)
     @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testSingleResourceId(){
 
         int idOfTheResourse = given(requestSpecification).
@@ -168,6 +175,10 @@ public class RegresTest {
     }
 
     @Test
+    @Description("Create a user and verify the name of that user is equal to one that was in a response")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testIdOfCreatedEntry(){
 
         SingleUserPojo responseSingleUserPojo =
@@ -184,6 +195,10 @@ public class RegresTest {
     }
 
     @Test
+    @Description("Create a user and verify the id of that user is equal to one that was in a response")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testIdOfCreatedEntryInAResponseBody(){
 
         given(requestSpecification).
@@ -216,32 +231,46 @@ public class RegresTest {
     }
 
     @Test
+    @Description("Delete a user entry by specifying the user`s id")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("Dima")
+    @Story("Rest Assured tests")
     public void deleteEntry(){
-        Response response = given(requestSpecification,responseSpecification).
-                //when().
-                delete("/api/users/2").
+        Response response =
+                given(requestSpecification,responseSpecification).
+                    delete("/api/users/2").
                 then().
-                assertThat().
-                statusCode(204).
-                extract().response();
+                    assertThat().
+                    statusCode(204).
+                    extract().response();
         System.out.println(response.body().asString());
         Assert.assertTrue(response.body().asString().isEmpty());
     }
 
     @Test
+    @Description("Get the registration token by providing valid email and password, validation of received token")
+    @Severity(SeverityLevel.BLOCKER)
+    @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testRegisteredToken(){
         String expectedToken = "QpwL5tke4Pnpja7X4";
-        String responseToken = given(requestSpecification).
+        String responseToken =
+                given(requestSpecification).
                 when().
-                body(registration).
-                post("/api/register").
+                    body(registration).
+                    post("/api/register").
                 then().
-                statusCode(200).
-                extract().response().jsonPath().getString("token");
+                    statusCode(200).
+                    extract().response().jsonPath().getString("token");
+
         Assert.assertEquals(responseToken, expectedToken);
     }
 
-    @Test(description = "создал файл, куда записал JSON, создал File подставив путь к файлу")
+    @Test()
+    @Description("Verify the error message for invalid registration with missing password")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testRegisterUnsuccessfulToken(){
         String expectedMessage = "Missing password";
         File file = new File("src/main/resources/not_valid_registration.json");
@@ -254,10 +283,15 @@ public class RegresTest {
                 then().
                     statusCode(400).
                     extract().response().jsonPath().getString("error");
+
         Assert.assertEquals(responseMessage, expectedMessage);
     }
 
     @Test
+    @Description("Validation of token received after registration with valid email and password ")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testTokenForLoginSuccesful(){
 
         String expectedToken = "QpwL5tke4Pnpja7X4";
@@ -273,31 +307,41 @@ public class RegresTest {
     }
 
     @Test()
+    @Description("Validation of error message after unsuccessful login by providing only email without password")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("Dima")
+    @Story("Rest Assured tests")
     public void testErrorMessageOfUnsuccessfulLogin(){
         String expectedMessage = "Missing password";
         File file = new File("src/main/resources/not_valid_registration.json");
 
         String responseMessage =
                 given(requestSpecification).
-                        body(file).
-                        when().
-                        post("/api/register").
-                        then().
-                        statusCode(400).
-                        extract().response().jsonPath().getString("error");
+                    body(file).
+                when().
+                    post("/api/register").
+                then().
+                    statusCode(400).
+                    extract().response().jsonPath().getString("error");
+
         Assert.assertEquals(responseMessage, expectedMessage);
     }
 
-    @Test
-    public void delateResponse(){
-        Response response =
-                given(requestSpecification).
-                when().
-                get("/api/users?delay=3").
-                then().
-                    extract().response();
-        System.out.println(response.asPrettyString());
-    }
+//  in progress
+//    @Test
+//    @Description("Create a user and verify the name of that user is equal to one that was in a response")
+//    @Severity(SeverityLevel.NORMAL)
+//    @Owner("Dima")
+//    @Story("Rest Assured tests")
+//    public void delayedResponse(){
+//        Response response =
+//                given(requestSpecification).
+//                when().
+//                get("/api/users?delay=3").
+//                then().
+//                    extract().response();
+//        System.out.println(response.asPrettyString());
+//    }
 
     @DataProvider
     public String[] dataForTest(){
