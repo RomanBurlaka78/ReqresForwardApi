@@ -4,6 +4,8 @@ import api.base.Specifications;
 import api.pojo.RegisterPojo;
 import api.pojo.Registration;
 import api.pojo.SingleUserPojo;
+import com.beust.jcommander.Parameter;
+import io.qameta.allure.*;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -12,8 +14,7 @@ import io.restassured.specification.ResponseSpecification;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +22,9 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-@Ignore
+@Epic("Api tests")
+@Feature("Dima`s version of regres api tests")
+@Link("https://reqres.in/")
 public class RegresTest {
 
     protected Specifications specifications = new Specifications();
@@ -38,21 +41,28 @@ public class RegresTest {
     }
 
     @Test
+    @Description("Test all the user`s id that are presented on the page")
+    @Severity(SeverityLevel.MINOR)
+    @Owner("Dima")
     public void testListOfUsersIdExisted(){
-
+        Allure.step("get the response from API");
         Response response = given(requestSpecification,responseSpecification).
                 get("/api/users?page=2").
                 then().
                 statusCode(200).
                 extract().
                 response();
-
+        Allure.step("Convert response to the list of integers that represent the id`s resived in response");
         List <Integer> listOfUsersId = response.jsonPath().getList("data.id");
+        Allure.step("Assert the id`s");
         Assert.assertEquals(List.of(7,8,9,10,11,12), listOfUsersId);
     }
 
     @Test
-    public void testListOfUsersIdExistedWithJsonScheema() throws IOException {
+    @Description("Test the json schema and response body with aid of Json validator")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("Dima")
+    public void testOfJsonScheemaWithResponseJsonBody() throws IOException {
 
         File file = new File("src/main/resources/JsonSchemaForListOfUsers.json");
         String schema = FileUtils.readFileToString(file, "UTF-8");
@@ -63,6 +73,9 @@ public class RegresTest {
     }
 
     @Test
+    @Description("Test the id of a sinle userr")
+    @Severity(SeverityLevel.TRIVIAL)
+    @Owner("Dima")
     public void testVerifyUsersId(){
 
         int idOfUser = given(requestSpecification,responseSpecification).
@@ -71,6 +84,9 @@ public class RegresTest {
     }
 
     @Test(description = "use String class for verification")
+    @Description("Test that the user`s id is not exist")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("Dima")
     public void testUserIsNotExist(){
         String expectedResult = "{}";
         String response = given(requestSpecification).
@@ -85,6 +101,9 @@ public class RegresTest {
     }
 
     @Test(description = "use Rest Assured class JSONObject for verification")
+    @Description("Test that the user`s id is not exist")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("Dima")
     public void testUserIsNotExistJson() {
 
         JSONObject jsonpObject = new JSONObject();
@@ -100,6 +119,9 @@ public class RegresTest {
     }
 
     @Test
+    @Description("Get all the id`s of users presented as a resources")
+    @Severity(SeverityLevel.MINOR)
+    @Owner("Dima")
     public void testGetListOfResourses(){
 
         Response response = given(requestSpecification).
@@ -113,6 +135,9 @@ public class RegresTest {
     }
 
     @Test
+    @Description("Test id`s of a single user")
+    @Severity(SeverityLevel.MINOR)
+    @Owner("Dima")
     public void testSingleResourceId(){
 
         int idOfTheResourse = given(requestSpecification).
@@ -123,12 +148,18 @@ public class RegresTest {
         Assert.assertEquals(idOfTheResourse, 2);
     }
 
-    @Test
-    public void testSingleResourceNotFaund(){
+    @Test(dataProvider = "dataForTest", description = "Parameterized test " +
+            "with @dataProvider, for id of user that dos not exist")
+    @Story("Parameterized tests")
+    @Description("Test id`s of a single user")
+    @Severity(SeverityLevel.MINOR)
+    @Owner("Dima")
+    @Parameters({"id value of the user we are loocking for"})
+    public void testSingleResourceNotFaund(String str){
 
         JSONObject jsonObject = new JSONObject();
         Response response = given(requestSpecification,responseSpecification).
-                get("/api/unknown/23").
+                get("/api/unknown/"+str).
                 then().
                 assertThat().
                 statusCode(404).
@@ -164,11 +195,13 @@ public class RegresTest {
                 body("name",equalTo("Neo"));
     }
 
-    @Test
-    public void testOfEntrysNameUpdated(){
+    @Test(description = "use .xml file for parameterization and @Optional for providing parameters by default")
+    @Story("Parameterized tests")
+    @Parameters({"name","job"})
+    public void testOfEntrysNameUpdated(@Optional("Regular gay") String name, @Optional("tester") String job){
 
-        reqwestSingleUserPojo.setName("Trinity");
-        reqwestSingleUserPojo.setJob("rebel hero");
+        reqwestSingleUserPojo.setName(name);
+        reqwestSingleUserPojo.setJob(job);
         SingleUserPojo responseSingleUserPojo = given(requestSpecification).
                 when().
                 body(reqwestSingleUserPojo).
@@ -264,5 +297,11 @@ public class RegresTest {
                 then().
                     extract().response();
         System.out.println(response.asPrettyString());
+    }
+
+    @DataProvider
+    public String[] dataForTest(){
+
+        return new String [] {"20", "21", "22", "23"};
     }
 }
