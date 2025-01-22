@@ -12,7 +12,6 @@ import org.testng.annotations.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 
-@Ignore
 public class FirstApiTest {
     private static final String URL = "https://reqres.in";
 
