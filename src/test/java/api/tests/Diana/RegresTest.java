@@ -2,7 +2,11 @@ package api.tests.Diana;
 
 import api.base.BaseTest;
 import api.pojo.*;
-
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Owner;
+import io.qameta.allure.Story;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -13,6 +17,7 @@ import java.util.List;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
+@Epic("Api tests")
 public class RegresTest extends BaseTest {
     protected SingleUserPojo reqwestSUP = new SingleUserPojo("morpheus", "leader", "2025-01-09T12:34:34.000Z");
     protected Registration registration = new Registration("eve.holt@reqres.in", "pistol");
@@ -20,9 +25,12 @@ public class RegresTest extends BaseTest {
 
 
     @Test
+    @Story("Get response")
+    @Description("Get list Of Users")
+    @Owner("DianaK")
     public void testVerifySingleUser() {
 
-        UserPojo singleUsers = given(requestSpec.body(singleuserP),responseSpec)
+        UserPojo singleUsers = given(requestSpec.body(singleuserP).filter(new AllureRestAssured()),responseSpec)
 
                 .get("/api/users/2")
                 .then()
@@ -37,9 +45,12 @@ public class RegresTest extends BaseTest {
     }
 
     @Test
+    @Story("Get response")
+    @Description("Get list Of Users Not Found")
+    @Owner("DianaK")
     public void testSingleUserNotExist() {
 
-        String response = given(requestSpec,responseSpec)
+        String response = given(requestSpec.filter(new AllureRestAssured()),responseSpec)
                 .get("/api/users/23")
                 .then()
                 .statusCode(404)
@@ -49,9 +60,12 @@ public class RegresTest extends BaseTest {
     }
 
     @Test
+    @Story("Get response")
+    @Description("Get list Of resource")
+    @Owner("DianaK")
     public void testGetListOfResource() {
 
-        List<ResourcePojo> resources = given(requestSpec,responseSpec)
+        List<ResourcePojo> resources = given(requestSpec.filter(new AllureRestAssured()),responseSpec)
                 .get("/api/unknown")
                 .then()
                 .statusCode(200)
@@ -65,9 +79,12 @@ public class RegresTest extends BaseTest {
     }
 
     @Test
+    @Story("Get response")
+    @Description("Get list Of resource id")
+    @Owner("DianaK")
     public void testGetSingleResourceId() {
 
-        ResourcePojo resp = given(requestSpec,responseSpec)
+        ResourcePojo resp = given(requestSpec.filter(new AllureRestAssured()),responseSpec)
                 .get("/api/unknown/2")
                 .then()
                 .statusCode(200)
@@ -81,9 +98,12 @@ public class RegresTest extends BaseTest {
     }
 
     @Test
+    @Story("Get response")
+    @Description("Get list Of resource id not found")
+    @Owner("DianaK")
     public void testSingleResourceIdNotExist() {
 
-        String response = given(requestSpec,responseSpec)
+        String response = given(requestSpec.filter(new AllureRestAssured()),responseSpec)
                 .get("/api/unknown/23")
                 .then()
                 .statusCode(404)
@@ -93,9 +113,12 @@ public class RegresTest extends BaseTest {
     }
 
     @Test
+    @Story("Post response")
+    @Description("Create single user")
+    @Owner("DianaK")
     public void testCreateUser() {
 
-        SingleUserPojo response = given(requestSpec.body(reqwestSUP),responseSpec)
+        SingleUserPojo response = given(requestSpec.body(reqwestSUP).filter(new AllureRestAssured()),responseSpec)
                 .post("/api/users")
                 .then()
                 .statusCode(201)
@@ -106,11 +129,14 @@ public class RegresTest extends BaseTest {
     }
 
     @Test
+    @Story("Put response")
+    @Description("Update single user")
+    @Owner("DianaK")
     public void testUpdateUser() {
 
         reqwestSUP.setJob("zion resident");
 
-        SingleUserPojo response = given(requestSpec.body(reqwestSUP),responseSpec)
+        SingleUserPojo response = given(requestSpec.body(reqwestSUP).filter(new AllureRestAssured()),responseSpec)
                 .put("/api/users/2")
                 .then()
                 .statusCode(200)
@@ -121,11 +147,14 @@ public class RegresTest extends BaseTest {
     }
 
     @Test
+    @Story("Patch response")
+    @Description("Update single user")
+    @Owner("DianaK")
     public void testUpdateUserPatch() {
 
         reqwestSUP.setCreatedAt("2025-01-09T12:30:37.398Z");
 
-        SingleUserPojo response = given(requestSpec.body(reqwestSUP),responseSpec)
+        SingleUserPojo response = given(requestSpec.body(reqwestSUP).filter(new AllureRestAssured()),responseSpec)
                 .patch("/api/users/2")
                 .then()
                 .statusCode(200)
@@ -134,9 +163,12 @@ public class RegresTest extends BaseTest {
         Assert.assertEquals(response.getCreatedAt(), reqwestSUP.getCreatedAt());
     }
     @Test
+    @Story("Delete response")
+    @Description("Delete single user")
+    @Owner("DianaK")
     public void testDeleteUser() {
 
-        Response response = given(requestSpec,responseSpec)
+        Response response = given(requestSpec.filter(new AllureRestAssured()),responseSpec)
                 .delete("/api/users/2")
                 .then()
                 .statusCode(204)
@@ -146,9 +178,12 @@ public class RegresTest extends BaseTest {
     }
 
     @Test
+    @Story("Post response")
+    @Description("User registration successful")
+    @Owner("DianaK")
     public void testRegisterUserSuccessful() {
 
-        RegisterPojo register = given(requestSpec.body(registration),responseSpec)
+        RegisterPojo register = given(requestSpec.body(registration).filter(new AllureRestAssured()),responseSpec)
                 .post("/api/register")
                 .then()
                 .statusCode(200)
@@ -159,12 +194,15 @@ public class RegresTest extends BaseTest {
     }
 
     @Test
+    @Story("Post response")
+    @Description("User registration unsuccessful")
+    @Owner("DianaK")
     public void testRegisterUserUnsuccessful() {
 
         registration.setEmail("sydney@fife");
         registration.setPassword("");
 
-        ErrorPojo error = given(requestSpec.body(registration),responseSpec)
+        ErrorPojo error = given(requestSpec.body(registration).filter(new AllureRestAssured()),responseSpec)
                 .post("/api/register")
                 .then()
                 .statusCode(400)
@@ -174,12 +212,15 @@ public class RegresTest extends BaseTest {
     }
 
     @Test
+    @Story("Post response")
+    @Description("Login successful")
+    @Owner("DianaK")
     public void testUserLoginRegister() {
 
         registration.setEmail("eve.holt@reqres.in");
         registration.setPassword("cityslicka");
 
-        TokenPojo token = given(requestSpec.body(registration),responseSpec)
+        TokenPojo token = given(requestSpec.body(registration).filter(new AllureRestAssured()),responseSpec)
                 .post("/api/login")
                 .then()
                 .statusCode(200)
@@ -189,12 +230,15 @@ public class RegresTest extends BaseTest {
     }
 
     @Test
+    @Story("Post response")
+    @Description("Login unsuccessful")
+    @Owner("DianaK")
     public void testUserLoginRegisterUnsuccessful() {
 
         registration.setEmail("peter@klaven");
         registration.setPassword("");
 
-        ErrorPojo response = given(requestSpec.body(registration),responseSpec)
+        ErrorPojo response = given(requestSpec.body(registration).filter(new AllureRestAssured()),responseSpec)
                 .post("/api/login")
                 .then()
                 .statusCode(400)
@@ -204,9 +248,12 @@ public class RegresTest extends BaseTest {
     }
 
     @Test
+    @Story("Post response")
+    @Description("Delayed response")
+    @Owner("DianaK")
     public void testDelayedResponse() {
 
-        Response response = given(requestSpec,responseSpec)
+        Response response = given(requestSpec.filter(new AllureRestAssured()),responseSpec)
                 .get("/api/users?delay=3")
                 .then()
                 .statusCode(200)
