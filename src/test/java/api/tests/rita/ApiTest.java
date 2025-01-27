@@ -1,26 +1,30 @@
 package api.tests.rita;
 
 import api.base.BaseTest;
-import api.pojo.CreateSingleUserPojo;
-import api.pojo.ErrorPojo;
-import api.pojo.SingleUserPojo;
-import api.pojo.UserPojo;
+import api.pojo.*;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
+import io.qameta.allure.*;
 
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.rootPath;
 import static org.hamcrest.Matchers.*;
 
+@Epic("Api tests")
+@Feature("User Management")
 public class ApiTest extends BaseTest {
 
     @Test
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("Get response")
+    @Description("Get list of users")
     public void testGetListUsers() {
 
-        given(requestSpec.queryParam("page", 2), responseSpec)
+        given(requestSpec.queryParam("page", 2).filter(new AllureRestAssured()), responseSpec)
                 .get("/api/users")
                 .then()
                 .statusCode(200)
@@ -36,6 +40,9 @@ public class ApiTest extends BaseTest {
     }
 
     @Test
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Get response")
+    @Description("Get single user")
     public void testGetSingleUser() {
 
         UserPojo response = given(requestSpec.pathParam("id", 2), responseSpec)
@@ -53,6 +60,9 @@ public class ApiTest extends BaseTest {
     }
 
     @Test
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Get response")
+    @Description("Get invalid user by ID")
     public void testGetInvalidUser() {
 
         Response response = given(requestSpec.pathParam("id", 23), responseSpec)
@@ -65,6 +75,9 @@ public class ApiTest extends BaseTest {
     }
 
     @Test
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Post response")
+    @Description("Create a user")
     public void testPostCreateUser() {
 
         CreateSingleUserPojo postBody = new CreateSingleUserPojo("morpheus", "leader");
@@ -80,24 +93,10 @@ public class ApiTest extends BaseTest {
 
     }
 
-    @Ignore
     @Test
-    public void testPostCreateUserWithoutName() {
-        // баг - Expected status code <400> but was <201>
-
-        CreateSingleUserPojo postBody = new CreateSingleUserPojo("", "leader");
-
-        ErrorPojo response = given(requestSpec.body(postBody), responseSpec)
-                .post("/api/users")
-                .then()
-                .statusCode(400)
-                .extract().as(ErrorPojo.class);
-
-        Assert.assertEquals(response.getError(), "error: Missing required fields");
-
-    }
-
-    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Put response")
+    @Description("Update user")
     public void testPutUser() {
 
         SingleUserPojo updateUser = new SingleUserPojo("neo", "the one");
@@ -114,6 +113,27 @@ public class ApiTest extends BaseTest {
     }
 
     @Test
+    @Severity(SeverityLevel.TRIVIAL)
+    @Story("Patch response")
+    @Description("Update user")
+    public void testPatchUser() {
+
+        SingleUserPojo updateUser = new SingleUserPojo("morpheus", "zion resident");
+
+        SingleUserPojo response = given(requestSpec.body(updateUser), responseSpec)
+                .patch("api/users/2")
+                .then()
+                .statusCode(200)
+                .extract().as(SingleUserPojo.class);
+
+        Assert.assertEquals(response.getName(), "morpheus");
+        Assert.assertEquals(response.getJob(), "zion resident");
+    }
+
+    @Test
+    @Severity(SeverityLevel.TRIVIAL)
+    @Story("Delete response")
+    @Description("Delete a user")
     public void testDeleteUser() {
         given(requestSpec)
                 .delete("api/users/2")
@@ -123,14 +143,54 @@ public class ApiTest extends BaseTest {
     }
 
     @Test
-    public void testDeleteUserNegative() {
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Post response")
+    @Description("Register a user")
+    public void testRegisterUser() {
 
-        Response response = given(requestSpec, responseSpec)
-                .delete("api/users/2")
+        Registration registerUser = new Registration("eve.holt@reqres.in", "pistol");
+
+        RegisterPojo response = given(requestSpec.body(registerUser), responseSpec)
+                .post("/api/register")
                 .then()
-                .statusCode(204)
-                .extract().response();
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(rootPath, RegisterPojo.class);
 
+        Assert.assertEquals(response.getId(), 4);
+        Assert.assertEquals(response.getToken(), "QpwL5tke4Pnpja7X4");
+    }
 
+    @Test
+    @Severity(SeverityLevel.CRITICAL)
+    @Story("Post response")
+    @Description("Login a user")
+    public void testLoginUser() {
+
+        Registration login = new Registration("eve.holt@reqres.in", "cityslicka");
+
+        RegisterPojo response = given(requestSpec.body(login), responseSpec)
+                .post("/api/login")
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(rootPath, RegisterPojo.class);
+
+        Assert.assertEquals(response.getToken(), "QpwL5tke4Pnpja7X4");
+    }
+
+    @Test
+    @Severity(SeverityLevel.NORMAL)
+    @Story("Post response")
+    @Description("Login a user without password")
+    public void testLoginUserWithoutPassword() {
+
+        Registration login = new Registration("eve.holt@reqres.in", null);
+
+        ErrorPojo response = given(requestSpec.body(login), responseSpec)
+                .post("/api/login")
+                .then()
+                .statusCode(400)
+                .extract().body().jsonPath().getObject(rootPath, ErrorPojo.class);
+
+        Assert.assertEquals(response.getError(), "Missing password");
     }
 }
