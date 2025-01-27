@@ -1,13 +1,11 @@
-package api.tests.dima;
+package api.tests.dima.test;
 
 import api.base.Specifications;
-import api.pojo.RegisterPojo;
 import api.pojo.Registration;
 import api.pojo.SingleUserPojo;
-import com.beust.jcommander.Parameter;
+import api.tests.dima.utils.AttachmentsForTests;
 import io.qameta.allure.*;
 import io.restassured.module.jsv.JsonSchemaValidator;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -34,25 +32,26 @@ public class RegresTest {
     protected SingleUserPojo reqwestSingleUserPojo = new SingleUserPojo("Neo", "Matrica pioner");
     protected Registration registration = new Registration("eve.holt@reqres.in", "pistolet");
 
-
     {
         requestSpecification = specifications.setupRequest();
         responseSpecification = specifications.setupResponse();
     }
 
     @Test
-    @Description("Test all the user`s id that are presented on the page")
+    @Description("Test all the user`s id that are presented on the page, line-45")
     @Severity(SeverityLevel.MINOR)
     @Owner("Dima")
     @Story("Rest Assured tests")
     public void testListOfUsersIdExisted(){
         Allure.step("get the response from API");
-        Response response = given(requestSpecification,responseSpecification).
-                get("/api/users?page=2").
+        Response response =
+                given(requestSpecification,responseSpecification).
+                    //filter(new AllureRestAssured()).
+                    get("/api/users?page=2").
                 then().
-                statusCode(200).
-                extract().
-                response();
+                    statusCode(200).
+                    extract().
+                    response();
         Allure.step("Convert response to the list of integers that represent the id`s resived in response");
         List <Integer> listOfUsersId = response.jsonPath().getList("data.id");
         Allure.step("Assert the id`s");
@@ -60,7 +59,7 @@ public class RegresTest {
     }
 
     @Test
-    @Description("Test the json schema and response body with aid of Json validator")
+    @Description("Test the json schema and response body with aid of Json validator, line-65, and attaching the JSON scheema document")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
     @Story("Rest Assured tests")
@@ -72,10 +71,11 @@ public class RegresTest {
                 get("/api/users?page=2").
             then().
                 body(JsonSchemaValidator.matchesJsonSchema(schema));
+        AttachmentsForTests.attachDataJson();
     }
 
     @Test
-    @Description("Test the id of a sinle userr")
+    @Description("Test the id of a sinle userr, line-80")
     @Severity(SeverityLevel.TRIVIAL)
     @Owner("Dima")
     @Story("Rest Assured tests")
@@ -86,7 +86,7 @@ public class RegresTest {
         Assert.assertEquals(idOfUser,2);
     }
 
-    @Test(description = "use String class for verification")
+    @Test(description = "use String class for verification, line-92")
     @Description("Test that the user`s id is not exist")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
@@ -104,7 +104,7 @@ public class RegresTest {
         Assert.assertEquals(response, expectedResult);
     }
 
-    @Test(description = "use Rest Assured class JSONObject for verification")
+    @Test(description = "use Rest Assured class JSONObject for verification, line-110")
     @Description("Test that the user`s id is not exist")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
@@ -124,7 +124,7 @@ public class RegresTest {
     }
 
     @Test
-    @Description("Get all the id`s of users presented as a resources")
+    @Description("Get all the id`s of users presented as a resources, line-129")
     @Severity(SeverityLevel.MINOR)
     @Owner("Dima")
     @Story("Rest Assured tests")
@@ -141,7 +141,7 @@ public class RegresTest {
     }
 
     @Test
-    @Description("Test id`s of a single user")
+    @Description("Test id`s of a single user, line-146")
     @Severity(SeverityLevel.MINOR)
     @Owner("Dima")
     @Story("Rest Assured tests")
@@ -155,10 +155,9 @@ public class RegresTest {
         Assert.assertEquals(idOfTheResourse, 2);
     }
 
-    @Test(dataProvider = "dataForTest", description = "Parameterized test " +
-            "with @dataProvider, for id of user that dos not exist")
+    @Test(dataProvider = "dataForTest")
     @Story("Parameterized tests")
-    @Description("Test id`s of a single user")
+    @Description("Parameterized test with @dataProvider, for id of user that dos not exist, line-161")
     @Severity(SeverityLevel.MINOR)
     @Owner("Dima")
     @Parameters({"id value of the user we are loocking for"})
@@ -175,12 +174,13 @@ public class RegresTest {
     }
 
     @Test
-    @Description("Create a user and verify the name of that user is equal to one that was in a response")
+    @Description("Create a user and verify the name of that user is equal to one that was in a response, line-180")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
     @Story("Rest Assured tests")
     public void testIdOfCreatedEntry(){
-
+//        Allure.parameter("name", reqwestSingleUserPojo.getName());
+//        Allure.parameter("job", reqwestSingleUserPojo.getJob() );
         SingleUserPojo responseSingleUserPojo =
                 given(requestSpecification).
                 when().
@@ -195,7 +195,7 @@ public class RegresTest {
     }
 
     @Test
-    @Description("Create a user and verify the id of that user is equal to one that was in a response")
+    @Description("Create a user and verify the id of that user is equal to one that was in a response, line-200")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
     @Story("Rest Assured tests")
@@ -210,28 +210,32 @@ public class RegresTest {
                 body("name",equalTo("Neo"));
     }
 
-    @Test(description = "use .xml file for parameterization and @Optional for providing parameters by default")
+    @Test
+    @Description("Use .xml file for parameterization and @Optional for providing parameters by default, line-216")
+    @Severity(SeverityLevel.NORMAL)
     @Story("Parameterized tests")
     @Parameters({"name","job"})
     public void testOfEntrysNameUpdated(@Optional("Regular gay") String name, @Optional("tester") String job){
 
         reqwestSingleUserPojo.setName(name);
         reqwestSingleUserPojo.setJob(job);
-        SingleUserPojo responseSingleUserPojo = given(requestSpecification).
+
+        SingleUserPojo responseSingleUserPojo =
+                given(requestSpecification).
                 when().
-                body(reqwestSingleUserPojo).
-                put("/api/users/2").
+                    body(reqwestSingleUserPojo).
+                    put("/api/users/2").
                 then().
-                log().all().
-                statusCode(200).
-                extract().as(SingleUserPojo.class);
+                    log().all().
+                    statusCode(200).
+                    extract().as(SingleUserPojo.class);
 
         Assert.assertEquals(responseSingleUserPojo.getName(), reqwestSingleUserPojo.getName());
 
     }
 
     @Test
-    @Description("Delete a user entry by specifying the user`s id")
+    @Description("Delete a user entry by specifying the user`s id, line-239")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
     @Story("Rest Assured tests")
@@ -248,7 +252,7 @@ public class RegresTest {
     }
 
     @Test
-    @Description("Get the registration token by providing valid email and password, validation of received token")
+    @Description("Get the registration token by providing valid email and password, validation of received token, line-257")
     @Severity(SeverityLevel.BLOCKER)
     @Owner("Dima")
     @Story("Rest Assured tests")
@@ -267,7 +271,7 @@ public class RegresTest {
     }
 
     @Test()
-    @Description("Verify the error message for invalid registration with missing password")
+    @Description("Verify the error message for invalid registration with missing password, line-275")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
     @Story("Rest Assured tests")
@@ -288,7 +292,7 @@ public class RegresTest {
     }
 
     @Test
-    @Description("Validation of token received after registration with valid email and password ")
+    @Description("Validation of token received after registration with valid email and password, line-296 ")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
     @Story("Rest Assured tests")
@@ -307,17 +311,25 @@ public class RegresTest {
     }
 
     @Test()
-    @Description("Validation of error message after unsuccessful login by providing only email without password")
+    @Description("Validation of error message after unsuccessful login by providing only email without password, line-315")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
     @Story("Rest Assured tests")
     public void testErrorMessageOfUnsuccessfulLogin(){
+
+        String temp = """
+                {
+                    "email": "peter@klaven"
+                }
+                """;
+
         String expectedMessage = "Missing password";
         File file = new File("src/main/resources/not_valid_registration.json");
 
         String responseMessage =
                 given(requestSpecification).
-                    body(file).
+                    //body(file).
+                    body(temp).
                 when().
                     post("/api/register").
                 then().
@@ -348,4 +360,6 @@ public class RegresTest {
 
         return new String [] {"20", "21", "22", "23"};
     }
+
+
 }
