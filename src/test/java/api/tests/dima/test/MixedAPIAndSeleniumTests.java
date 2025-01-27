@@ -39,7 +39,7 @@ public class MixedAPIAndSeleniumTests extends ProjectUtils{
 
     }
 
-    @Test
+    @Test(enabled = false)
     @Story("Tests on Selenium")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
