@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Api tests" configfailurepolicy="continue">
+
+    <test name="Regres API Tests">
+        <classes>
+            <class name="api.tests.dima.test.RegresTest"/>
+        </classes>
+    </test>
+
+    <test name="Factory annotation experement">
+        <classes>
+            <class name="api.tests.dima.test.FactoryParametersExperement"/>
+        </classes>
+    </test>
+
+    <test name="Tests on Selenium">
+        <classes>
+            <class name="api.tests.dima.test.MixedAPIAndSeleniumTests"/>
+        </classes>
+    </test>
+
+</suite>
