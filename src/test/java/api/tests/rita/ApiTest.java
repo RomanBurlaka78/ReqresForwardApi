@@ -2,7 +2,6 @@ package api.tests.rita;
 
 import api.base.BaseTest;
 import api.pojo.*;
-import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -24,7 +23,7 @@ public class ApiTest extends BaseTest {
     @Description("Get list of users")
     public void testGetListUsers() {
 
-        given(requestSpec.queryParam("page", 2).filter(new AllureRestAssured()), responseSpec)
+        given(requestSpec.queryParam("page", 2), responseSpec)
                 .get("/api/users")
                 .then()
                 .statusCode(200)
@@ -45,7 +44,7 @@ public class ApiTest extends BaseTest {
     @Description("Get single user")
     public void testGetSingleUser() {
 
-        UserPojo response = given(requestSpec.pathParam("id", 2).filter(new AllureRestAssured()), responseSpec)
+        UserPojo response = given(requestSpec.pathParam("id", 2), responseSpec)
                 .get("/api/users/{id}")
                 .then()
                 .statusCode(200)
@@ -65,7 +64,7 @@ public class ApiTest extends BaseTest {
     @Description("Get invalid user by ID")
     public void testGetInvalidUser() {
 
-        Response response = given(requestSpec.pathParam("id", 23).filter(new AllureRestAssured()), responseSpec)
+        Response response = given(requestSpec.pathParam("id", 23), responseSpec)
                 .get("/api/users/{id}")
                 .then()
                 .statusCode(404)
@@ -82,7 +81,7 @@ public class ApiTest extends BaseTest {
 
         CreateSingleUserPojo postBody = new CreateSingleUserPojo("morpheus", "leader");
 
-        SingleUserPojo response = given(requestSpec.body(postBody).filter(new AllureRestAssured()), responseSpec)
+        SingleUserPojo response = given(requestSpec.body(postBody), responseSpec)
                 .post("/api/users")
                 .then()
                 .statusCode(201)
@@ -101,7 +100,7 @@ public class ApiTest extends BaseTest {
 
         SingleUserPojo updateUser = new SingleUserPojo("neo", "the one");
 
-        SingleUserPojo response = given(requestSpec.body(updateUser).filter(new AllureRestAssured()), responseSpec)
+        SingleUserPojo response = given(requestSpec.body(updateUser), responseSpec)
                 .put("api/users/2")
                 .then()
                 .statusCode(200)
@@ -120,7 +119,7 @@ public class ApiTest extends BaseTest {
 
         SingleUserPojo updateUser = new SingleUserPojo("morpheus", "zion resident");
 
-        SingleUserPojo response = given(requestSpec.body(updateUser).filter(new AllureRestAssured()), responseSpec)
+        SingleUserPojo response = given(requestSpec.body(updateUser), responseSpec)
                 .patch("api/users/2")
                 .then()
                 .statusCode(200)
@@ -135,7 +134,7 @@ public class ApiTest extends BaseTest {
     @Story("Delete response")
     @Description("Delete a user")
     public void testDeleteUser() {
-        given(requestSpec.filter(new AllureRestAssured()))
+        given(requestSpec)
                 .delete("api/users/2")
                 .then()
                 .statusCode(204)
@@ -150,7 +149,7 @@ public class ApiTest extends BaseTest {
 
         Registration registerUser = new Registration("eve.holt@reqres.in", "pistol");
 
-        RegisterPojo response = given(requestSpec.body(registerUser).filter(new AllureRestAssured()), responseSpec)
+        RegisterPojo response = given(requestSpec.body(registerUser), responseSpec)
                 .post("/api/register")
                 .then()
                 .statusCode(200)
@@ -168,7 +167,7 @@ public class ApiTest extends BaseTest {
 
         Registration login = new Registration("eve.holt@reqres.in", "cityslicka");
 
-        RegisterPojo response = given(requestSpec.body(login).filter(new AllureRestAssured()), responseSpec)
+        RegisterPojo response = given(requestSpec.body(login), responseSpec)
                 .post("/api/login")
                 .then()
                 .statusCode(200)
@@ -185,7 +184,7 @@ public class ApiTest extends BaseTest {
 
         Registration login = new Registration("eve.holt@reqres.in", null);
 
-        ErrorPojo response = given(requestSpec.body(login).filter(new AllureRestAssured()), responseSpec)
+        ErrorPojo response = given(requestSpec.body(login), responseSpec)
                 .post("/api/login")
                 .then()
                 .statusCode(400)
@@ -199,7 +198,7 @@ public class ApiTest extends BaseTest {
     @Story("Get response")
     @Description("Get single resource")
     public void testGetSingleResource() {
-        ResourcePojo response = given(requestSpec.pathParam("id", 2).filter(new AllureRestAssured()), responseSpec)
+        ResourcePojo response = given(requestSpec.pathParam("id", 2), responseSpec)
                 .get("/api/unknown/{id}")
                 .then()
                 .statusCode(200)
@@ -217,7 +216,7 @@ public class ApiTest extends BaseTest {
     @Story("Get response")
     @Description("Get delayed response")
     public void testGetDelayedResponse() {
-        given(requestSpec.queryParam("delay", 3).filter(new AllureRestAssured()), responseSpec)
+        given(requestSpec.queryParam("delay", 3), responseSpec)
                 .get("/api/users")
                 .then()
                 .statusCode(200)
