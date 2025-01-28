@@ -1,5 +1,6 @@
 package api.base;
 
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.testng.ITestResult;
@@ -15,7 +16,7 @@ public abstract class BaseTest {
     public static ResponseSpecification responseSpec;
 
     public static void spec(){
-        requestSpec = specifications.setupRequest();
+        requestSpec = specifications.setupRequest().filter(new AllureRestAssured());
         responseSpec = specifications.setupResponse();
     }
 
