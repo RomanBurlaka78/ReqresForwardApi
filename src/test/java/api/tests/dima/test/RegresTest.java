@@ -173,6 +173,7 @@ public class RegresTest {
 
         Response response =
                 given().
+                    spec(requestSpecification).
                     filter(new AllureRestAssured()).
                 when().
                     get("/api/unknown").

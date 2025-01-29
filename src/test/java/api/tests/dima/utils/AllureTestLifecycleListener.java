@@ -16,12 +16,12 @@ public class AllureTestLifecycleListener implements TestLifecycleListener {
     public AllureTestLifecycleListener() {
     }
 
-    @Override
-    public void beforeTestStop(TestResult result) {
-        if (FAILED == result.getStatus() || BROKEN == result.getStatus()) {
-            WebDriver driver = SeleniumUtiles.getDriver();
-            AttachmentsForTests.saveScreenshot(driver);
-        }
-    }
+//    @Override
+//    public void beforeTestStop(TestResult result) {
+//        if (FAILED == result.getStatus() || BROKEN == result.getStatus()) {
+//            WebDriver driver = SeleniumUtiles.getDriver();
+//            AttachmentsForTests.saveScreenshot(driver);
+//        }
+//    }
 
 }
