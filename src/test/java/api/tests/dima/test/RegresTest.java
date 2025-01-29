@@ -179,7 +179,7 @@ public class RegresTest {
                     get("/api/unknown").
                 then().
                     spec(responseSpecification).
-                    statusCode(201). ////////////////////////////////
+                    statusCode(200). ////////////////////////////////
                     extract().response();
 
         Assert.assertEquals(List.of(1,2,3,4,5,6), response.jsonPath().getList("data.id"));
