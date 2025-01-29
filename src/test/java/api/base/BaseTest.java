@@ -20,11 +20,19 @@ public abstract class BaseTest {
         responseSpec = specifications.setupResponse();
     }
 
+    public static void setupSpec() {
+        requestSpec = specifications.setupRequest();
+        responseSpec = specifications.setupResponse();
+
+    }
+
     @BeforeMethod
     protected void beforeMethod(Method method) {
         ProjectUtils.logf("Запускается %s.%s", this.getClass().getName(), method.getName());
 
         spec();
+        setupSpec();
+        specifications.installSpec();
     }
 
     @AfterMethod
