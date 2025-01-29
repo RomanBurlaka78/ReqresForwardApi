@@ -1,18 +1,19 @@
 package api.tests.br;
 
+import api.base.BaseTest;
+import api.base.ListenersUtils;
 import api.base.Specifications;
 import api.pojo.CreateSingleUserPojo;
 import api.pojo.DataListUsers;
 import api.pojo.SingleUserPojo;
-import io.qameta.allure.Description;
-import io.qameta.allure.Epic;
-import io.qameta.allure.Story;
+import io.qameta.allure.*;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.Ignore;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
@@ -24,19 +25,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@Listeners(ListenersUtils.class)
+@Epic("Api tests version Roman")
+@Owner("Roman Burlaka")
+public class ApiTest extends BaseTest {
 
-@Epic("Api tests")
-public class ApiTest {
-    Specifications specifications = new Specifications();
-
-    @Test
+    @Test(priority = 0)
+    @Feature("Get Api")
+    @Link("https://reqres.in")
     @Story("Get response")
     @Description("Get list Of Users")
     public void testGetListOfUsers() {
-        specifications.installSpec();
-
         List<Object> itemList = given()
-                .filter(new AllureRestAssured())
                 .when()
                 .get("/api/users?page=2")
                 .then()
@@ -50,18 +50,16 @@ public class ApiTest {
         Assert.assertEquals(listHashMapUsers.get("first_name"), "Michael");
         Assert.assertEquals(listHashMapUsers.get("last_name"), "Lawson");
         Assert.assertEquals(listHashMapUsers.get("avatar"), "https://reqres.in/img/faces/7-image.jpg");
-
-
     }
 
 
-    @Test
+    @Test(priority = 1)
+    @Feature("Get Api")
+    @Link("https://reqres.in")
     @Story("Get response")
     @Description("Get list of users with deserialization Pojo class")
     public void testGetListUserPojo() {
-        specifications.installSpec();
         List<DataListUsers> itemList = given()
-                .filter(new AllureRestAssured())
                 .when()
                 .get("/api/users?page=2")
                 .then()
@@ -69,17 +67,16 @@ public class ApiTest {
                 .extract().body().jsonPath().getList("data", DataListUsers.class);
 
         Assert.assertEquals(itemList.get(0).id, 7);
-
-        itemList.stream().forEach(System.out::println);
-
     }
 
-    @Test
+
+    @Test(priority = 2)
+    @Feature("Get Api")
+    @Link("https://reqres.in")
     @Story("Get response")
     @Description("Get information about single user")
     public void testSingleUsers() {
         Response response = given()
-                .filter(new AllureRestAssured())
                 .when()
                 .get("/api/users/2")
                 .then()
@@ -89,11 +86,13 @@ public class ApiTest {
                 .extract().response();
 
         JsonPath jsonPath = new JsonPath(response.asString());
-        System.out.println(jsonPath);
-
+        Assert.assertEquals(jsonPath.getString("data.first_name"), "Janet");
     }
 
-    @Test
+
+    @Test(priority = 2)
+    @Feature("Get Api")
+    @Link("https://reqres.in")
     @Story("Get response")
     @Description("Get information about single user not found")
     public void testSingleUserNotFound() {
@@ -105,17 +104,20 @@ public class ApiTest {
                 .statusCode(404)
                 .extract().response();
 
-        //Should be assertions
+        Assert.assertEquals(response.statusCode(), 404);
     }
 
-    @Test
+
+    @Test(priority = 3)
+    @Feature("Post Api")
+    @Link("https://reqres.in")
     @Story("Post response")
     @Description("Create  single user")
     public void testPostUser() {
         CreateSingleUserPojo postBody = new CreateSingleUserPojo("morpheus", "leader");
 
         SingleUserPojo response = given()
-                .when().log().all()
+                .when()
                 .contentType(ContentType.JSON)
                 .body(postBody)
                 .post("/api/users")
@@ -124,10 +126,9 @@ public class ApiTest {
                 .statusCode(201)
                 .extract().as(SingleUserPojo.class);
 
-        //Should be assertions
-
+        Assert.assertEquals(response.getName(), "morpheus");
+        Assert.assertEquals(response.getJob(), "leader");
     }
-
 
 
 }
