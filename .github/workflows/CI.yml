@@ -25,7 +25,7 @@ jobs:
           cache: 'maven'
 
       - name: Maven test
-        run: mvn clean test
+        run: mvn clean install -U
         env:
           CI_RUN: true
 
