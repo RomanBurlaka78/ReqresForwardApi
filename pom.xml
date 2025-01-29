@@ -17,6 +17,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.rest-assured</groupId>                   <!-- rest assured -->
+            <artifactId>rest-assured</artifactId>
+            <version>5.5.0</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.testng</groupId>                        <!-- TestNG 7.10.2 -->
@@ -25,7 +31,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.qameta.allure</groupId>
+            <groupId>io.qameta.allure</groupId>                 <!--адаптер алюр-рест ашурд -->
             <artifactId>allure-rest-assured</artifactId>
             <version>2.25.0</version>
         </dependency>
@@ -91,7 +97,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>            <!-- ? -->
+                <groupId>org.apache.maven.plugins</groupId>            <!-- surefire-plugin -->
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>

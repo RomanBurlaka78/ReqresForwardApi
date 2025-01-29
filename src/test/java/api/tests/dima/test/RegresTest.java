@@ -5,10 +5,15 @@ import api.pojo.Registration;
 import api.pojo.SingleUserPojo;
 import api.tests.dima.utils.AttachmentsForTests;
 import io.qameta.allure.*;
+import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.RestAssured;
+import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.module.jsv.JsonSchemaValidator;
 import io.restassured.response.Response;
+import io.restassured.specification.QueryableRequestSpecification;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import io.restassured.specification.SpecificationQuerier;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.testng.Assert;
@@ -32,7 +37,8 @@ public class RegresTest {
     protected SingleUserPojo reqwestSingleUserPojo = new SingleUserPojo("Neo", "Matrica pioner");
     protected Registration registration = new Registration("eve.holt@reqres.in", "pistolet");
 
-    {
+    @BeforeClass
+    public void setUp(){
         requestSpecification = specifications.setupRequest();
         responseSpecification = specifications.setupResponse();
     }
@@ -45,10 +51,12 @@ public class RegresTest {
     public void testListOfUsersIdExisted(){
         Allure.step("get the response from API");
         Response response =
-                given(requestSpecification,responseSpecification).
-                    //filter(new AllureRestAssured()).
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
                     get("/api/users?page=2").
                 then().
+                    spec(responseSpecification).
                     statusCode(200).
                     extract().
                     response();
@@ -56,6 +64,11 @@ public class RegresTest {
         List <Integer> listOfUsersId = response.jsonPath().getList("data.id");
         Allure.step("Assert the id`s");
         Assert.assertEquals(List.of(7,8,9,10,11,12), listOfUsersId);
+        System.out.println("11111111111111111111111111111111111111111111111111111111111111111");
+        System.out.println("11111111111111111111111111111111111111111111111111111111111111111");
+        System.out.println("11111111111111111111111111111111111111111111111111111111111111111");
+        QueryableRequestSpecification queryable = SpecificationQuerier.query(requestSpecification);
+        System.out.println(queryable.getDefinedFilters());
     }
 
     @Test
@@ -67,11 +80,21 @@ public class RegresTest {
 
         File file = new File("src/main/resources/JsonSchemaForListOfUsers.json");
         String schema = FileUtils.readFileToString(file, "UTF-8");
-            given(requestSpecification,responseSpecification).
+            //given(requestSpecification.filter(new AllureRestAssured()),responseSpecification).
+            given().
+                spec(requestSpecification).
+                    filter(new AllureRestAssured()).
                 get("/api/users?page=2").
             then().
+                spec(responseSpecification).
                 body(JsonSchemaValidator.matchesJsonSchema(schema));
-        AttachmentsForTests.attachDataJson();
+        //AttachmentsForTests.attachDataJson();
+        System.out.println("************************************************");
+        System.out.println("************************************************");
+        System.out.println("************************************************");
+        System.out.println("************************************************");
+        QueryableRequestSpecification queryable = SpecificationQuerier.query(requestSpecification);
+        System.out.println(queryable.getDefinedFilters());
     }
 
     @Test
@@ -81,8 +104,17 @@ public class RegresTest {
     @Story("Rest Assured tests")
     public void testVerifyUsersId(){
 
-        int idOfUser = given(requestSpecification,responseSpecification).
-                get("/api/users/2").jsonPath().getInt("data.id");
+        int idOfUser =
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
+                when().
+                    get("/api/users/2").
+                then().
+                    spec(responseSpecification).
+                    extract().
+                    jsonPath().getInt("data.id");
+
         Assert.assertEquals(idOfUser,2);
     }
 
@@ -92,11 +124,16 @@ public class RegresTest {
     @Owner("Dima")
     @Story("Rest Assured tests")
     public void testUserIsNotExist(){
+
         String expectedResult = "{}";
-        String response = given(requestSpecification).
+        String response =
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
                 when().
                     get("/api/users/23").
                 then().
+                    spec(responseSpecification).
                     assertThat().
                     statusCode(404).
                     extract().asString();
@@ -112,13 +149,17 @@ public class RegresTest {
     public void testUserIsNotExistJson() {
 
         JSONObject jsonpObject = new JSONObject();
-        Response response = given(requestSpecification).
+        Response response =
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
                 when().
-                get("/api/users/23").
+                    get("/api/users/23").
                 then().
-                assertThat().
-                statusCode(404).
-                extract().response();
+                    spec(responseSpecification).
+                    assertThat().
+                    statusCode(404).
+                    extract().response();
 
         Assert.assertEquals(response.body().asString(), jsonpObject.toString());
     }
@@ -130,12 +171,15 @@ public class RegresTest {
     @Story("Rest Assured tests")
     public void testGetListOfResourses(){
 
-        Response response = given(requestSpecification).
+        Response response =
+                given().
+                    filter(new AllureRestAssured()).
                 when().
-                get("/api/unknown").
+                    get("/api/unknown").
                 then().
-                statusCode(200).
-                extract().response();
+                    spec(responseSpecification).
+                    statusCode(200).
+                    extract().response();
 
         Assert.assertEquals(List.of(1,2,3,4,5,6), response.jsonPath().getList("data.id"));
     }
@@ -147,11 +191,18 @@ public class RegresTest {
     @Story("Rest Assured tests")
     public void testSingleResourceId(){
 
-        int idOfTheResourse = given(requestSpecification).
+        int idOfTheResourse =
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
                 when().
-                get("/api/unknown/2").
-                jsonPath().
-                getInt("data.id");
+                    get("/api/unknown/2").
+                then().
+                    spec(responseSpecification).
+                    extract().
+                    jsonPath().
+                    getInt("data.id");
+
         Assert.assertEquals(idOfTheResourse, 2);
     }
 
@@ -164,12 +215,17 @@ public class RegresTest {
     public void testSingleResourceNotFaund(String str){
 
         JSONObject jsonObject = new JSONObject();
-        Response response = given(requestSpecification,responseSpecification).
-                get("/api/unknown/"+str).
+        Response response =
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
+                when().
+                    get("/api/unknown/"+str).
                 then().
-                assertThat().
-                statusCode(404).
-                extract().response();
+                    spec(responseSpecification).
+                    assertThat().
+                    statusCode(404).
+                    extract().response();
         Assert.assertEquals(response.body().asString(), jsonObject.toString());
     }
 
@@ -179,19 +235,23 @@ public class RegresTest {
     @Owner("Dima")
     @Story("Rest Assured tests")
     public void testIdOfCreatedEntry(){
-//        Allure.parameter("name", reqwestSingleUserPojo.getName());
-//        Allure.parameter("job", reqwestSingleUserPojo.getJob() );
+
+        Allure.parameter("name", reqwestSingleUserPojo.getName());
+        Allure.parameter("job", reqwestSingleUserPojo.getJob() );
+
         SingleUserPojo responseSingleUserPojo =
-                given(requestSpecification).
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
                 when().
                     body(reqwestSingleUserPojo).
                     post("/api/users").
                 then().
+                    spec(responseSpecification).
                     statusCode(201).
                     extract().as(SingleUserPojo.class);
 
         Assert.assertEquals(responseSingleUserPojo.getName(), reqwestSingleUserPojo.getName());
-
     }
 
     @Test
@@ -201,13 +261,16 @@ public class RegresTest {
     @Story("Rest Assured tests")
     public void testIdOfCreatedEntryInAResponseBody(){
 
-        given(requestSpecification).
+                given().
+                  spec(requestSpecification).
+                  filter(new AllureRestAssured()).
                 when().
-                body(reqwestSingleUserPojo).
-                post("/api/users").
+                    body(reqwestSingleUserPojo).
+                    post("/api/users").
                 then().
-                statusCode(201).
-                body("name",equalTo("Neo"));
+                    spec(responseSpecification).
+                    statusCode(201).
+                    body("name",equalTo("Neo"));
     }
 
     @Test
@@ -221,17 +284,18 @@ public class RegresTest {
         reqwestSingleUserPojo.setJob(job);
 
         SingleUserPojo responseSingleUserPojo =
-                given(requestSpecification).
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
                 when().
                     body(reqwestSingleUserPojo).
                     put("/api/users/2").
                 then().
-                    log().all().
+                    spec(responseSpecification).
                     statusCode(200).
                     extract().as(SingleUserPojo.class);
 
         Assert.assertEquals(responseSingleUserPojo.getName(), reqwestSingleUserPojo.getName());
-
     }
 
     @Test
@@ -241,13 +305,17 @@ public class RegresTest {
     @Story("Rest Assured tests")
     public void deleteEntry(){
         Response response =
-                given(requestSpecification,responseSpecification).
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
+                when().
                     delete("/api/users/2").
                 then().
+                    spec(responseSpecification).
                     assertThat().
                     statusCode(204).
                     extract().response();
-        System.out.println(response.body().asString());
+
         Assert.assertTrue(response.body().asString().isEmpty());
     }
 
@@ -257,13 +325,17 @@ public class RegresTest {
     @Owner("Dima")
     @Story("Rest Assured tests")
     public void testRegisteredToken(){
+
         String expectedToken = "QpwL5tke4Pnpja7X4";
         String responseToken =
-                given(requestSpecification).
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
                 when().
                     body(registration).
                     post("/api/register").
                 then().
+                    spec(responseSpecification).
                     statusCode(200).
                     extract().response().jsonPath().getString("token");
 
@@ -276,15 +348,19 @@ public class RegresTest {
     @Owner("Dima")
     @Story("Rest Assured tests")
     public void testRegisterUnsuccessfulToken(){
+
         String expectedMessage = "Missing password";
         File file = new File("src/main/resources/not_valid_registration.json");
 
         String responseMessage =
-                given(requestSpecification).
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
                     body(file).
                 when().
                     post("/api/register").
                 then().
+                    spec(responseSpecification).
                     statusCode(400).
                     extract().response().jsonPath().getString("error");
 
@@ -300,11 +376,14 @@ public class RegresTest {
 
         String expectedToken = "QpwL5tke4Pnpja7X4";
 
-                given(requestSpecification).
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
                 when().
                     body(new Registration("eve.holt@reqres.in", "cityslicka")).
                     post("api/login").
                 then().
+                    spec(responseSpecification).
                     statusCode(200).
                     body("token",equalTo(expectedToken));
 
@@ -327,12 +406,14 @@ public class RegresTest {
         File file = new File("src/main/resources/not_valid_registration.json");
 
         String responseMessage =
-                given(requestSpecification).
-                    //body(file).
+                given().
+                    spec(requestSpecification).
+                    filter(new AllureRestAssured()).
                     body(temp).
                 when().
                     post("/api/register").
                 then().
+                    spec(responseSpecification).
                     statusCode(400).
                     extract().response().jsonPath().getString("error");
 

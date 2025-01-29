@@ -2,7 +2,9 @@ package api.tests.dima.test;
 
 import api.base.ProjectUtils;
 import api.tests.dima.utils.SeleniumUtiles;
+import api.tests.dima.utils.TestListener;
 import io.qameta.allure.*;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.response.Response;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -17,7 +19,7 @@ import static io.restassured.RestAssured.given;
 //@Listeners({TestListener.class})
 @Epic("Api tests")
 @Feature("Mixed tests that are being executed via Rest Assured and Selenium")
-public class MixedAPIAndSeleniumTests extends ProjectUtils{
+public class MixedAPIAndSeleniumTests{
 
 
     @Test
@@ -30,12 +32,15 @@ public class MixedAPIAndSeleniumTests extends ProjectUtils{
         Allure.parameter("end point for API", products);
         Response response =
                 given().
-                    when().
-                get("https://simple-grocery-store-api.glitch.me"+products).
-                    then().
+                    filter(new AllureRestAssured()).
+                when().
+                    get("https://simple-grocery-store-api.glitch.me"+products).
+                then().
                     statusCode(200).
                     extract().
                     response();
+
+        System.out.println(response.asPrettyString());
 
     }
 
@@ -44,7 +49,7 @@ public class MixedAPIAndSeleniumTests extends ProjectUtils{
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
     @Description("This test is entended to fail for porpose of taking sceenshot and render it to a Allure report")
-    public void testLogotypeOfUdemyMainPage() throws IOException {
+    public void testLogotypeOfUdemyMainPage(){
 
         String expectedValue = "lazy" + "y";
         Allure.step("get to web page www.udemy.com", () -> {

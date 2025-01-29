@@ -1,6 +1,7 @@
 package api.tests.dima.test;
 
 import io.qameta.allure.*;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.qameta.allure.testng.TestInstanceParameter;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -35,6 +36,7 @@ public class UseFactoryAprouchTest {
 
         String responseMessage =
                 given().
+                    filter(new AllureRestAssured()).
                     header("Content-Type", "application/json" ).
                     body(combined).
                     log().all().
