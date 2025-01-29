@@ -44,28 +44,20 @@ public class MixedAPIAndSeleniumTests{
 
     }
 
-    @Test(enabled = false)
-    @Story("Tests on Selenium")
-    @Severity(SeverityLevel.NORMAL)
-    @Owner("Dima")
-    @Description("This test is entended to fail for porpose of taking sceenshot and render it to a Allure report")
-    public void testLogotypeOfUdemyMainPage(){
-
-        String expectedValue = "lazy" + "y";
-        Allure.step("get to web page www.udemy.com", () -> {
-            SeleniumUtiles.getDriver().get("https://www.udemy.com/");
-        });
-        Allure.step("fetch the element and make assertion", () -> {
-            WebElement element = SeleniumUtiles.getWebDriverWait().until(ExpectedConditions.visibilityOf(SeleniumUtiles.getDriver().findElement(By.xpath("//img[@src='https://frontends.udemycdn.com/frontends-homepage/staticx/udemy/images/v7/logo-udemy.svg']"))));
-            Assert.assertEquals(element.getAttribute("loading"), expectedValue);
-        });
+//    @Test()
+//    @Story("Tests on Selenium")
+//    @Severity(SeverityLevel.NORMAL)
+//    @Owner("Dima")
+//    @Description("This test is entended to fail for porpose of taking sceenshot and render it to a Allure report")
+//    public void testLogotypeOfUdemyMainPage(){
+//
+//        String expectedValue = "lazy" + "y";
+//        Allure.step("get to web page www.udemy.com", () -> {
+//            SeleniumUtiles.getDriver().get("https://www.udemy.com/");
+//        });
+//        Allure.step("fetch the element and make assertion", () -> {
+//            WebElement element = SeleniumUtiles.getWebDriverWait().until(ExpectedConditions.visibilityOf(SeleniumUtiles.getDriver().findElement(By.xpath("//img[@src='https://frontends.udemycdn.com/frontends-homepage/staticx/udemy/images/v7/logo-udemy.svg']"))));
+//            Assert.assertEquals(element.getAttribute("loading"), expectedValue);
+//        });
     }
 
-
-
-
-
-
-
-
-}
