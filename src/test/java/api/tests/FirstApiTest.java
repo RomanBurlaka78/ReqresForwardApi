@@ -3,6 +3,8 @@ package api.tests;
 import api.base.Specifications;
 import api.pojo.CreateSingleUserPojo;
 import api.pojo.SingleUserPojo;
+import io.qameta.allure.Description;
+import io.qameta.allure.Story;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -15,7 +17,10 @@ import static org.hamcrest.Matchers.notNullValue;
 public class FirstApiTest {
     private static final String URL = "https://reqres.in";
 
+
     @Test
+    @Story("Get")
+    @Description("Get list of users")
     public void testGetListUsers() {
         Specifications specifications = new Specifications();
         specifications.installSpec();
@@ -32,7 +37,9 @@ public class FirstApiTest {
 
 
     @Test
-    public void testSingleUsers() {
+    @Story("Get")
+    @Description("Get single user")
+    public void testSingleUser() {
         Response response = given()
                 .when().log().all()
                 .contentType(ContentType.JSON)
@@ -47,6 +54,8 @@ public class FirstApiTest {
     }
 
     @Test
+    @Story("Get")
+    @Description("Get user not found")
     public void testSingleUserNotFound() {
         Response response = given()
                 .when().log().all()
@@ -60,6 +69,8 @@ public class FirstApiTest {
     }
 
     @Test
+    @Story("Post")
+    @Description("Create user")
     public void testPostUser() {
         CreateSingleUserPojo postBody = new CreateSingleUserPojo("morpheus", "leader");
 
@@ -78,6 +89,8 @@ public class FirstApiTest {
     }
 
     @Test
+    @Story("Post")
+    @Description("Create user")
     public void testPostUserResponse() {
         SingleUserPojo postBody = new SingleUserPojo("morpheus", "leader");
 
@@ -94,6 +107,5 @@ public class FirstApiTest {
         //Should be assertions
 
     }
-
 
 }
