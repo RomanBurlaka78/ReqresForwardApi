@@ -44,7 +44,7 @@ public class MixedAPIAndSeleniumTests{
 
     }
 
-    @Test(enabled = false)
+    @Test()
     @Story("Tests on Selenium")
     @Severity(SeverityLevel.NORMAL)
     @Owner("Dima")
