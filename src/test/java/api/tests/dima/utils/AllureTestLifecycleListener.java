@@ -11,18 +11,17 @@ import org.openqa.selenium.WebDriver;
 import static io.qameta.allure.model.Status.BROKEN;
 import static io.qameta.allure.model.Status.FAILED;
 
-public class AllureTestLifecycleListener implements TestLifecycleListener {
+public class AllureTestLifecycleListener implements TestLifecycleListener{
 
     public AllureTestLifecycleListener() {
     }
 
-//    @Override
-//    public void beforeTestStop(TestResult result) {
-//        if (FAILED == result.getStatus() || BROKEN == result.getStatus()) {
-//            WebDriver driver = SeleniumUtiles.getDriver();
-//            AttachmentsForTests.saveScreenshot(driver);
-//            driver.close();
-//        }
-//    }
+    @Override
+    public void beforeTestStop(TestResult result) {
+        if (FAILED == result.getStatus() || BROKEN == result.getStatus()) {
+            AttachmentsForTests.saveScreenshot(SeleniumUtiles.getDriver());
+            SeleniumUtiles.getDriver().close();
+        }
+    }
 
 }

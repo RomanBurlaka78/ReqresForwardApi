@@ -17,19 +17,19 @@ import java.nio.file.Paths;
 
 public class TestListener implements ITestListener {
 
-//    @Override
-//    @Description("Вариант с сохранением скриншота локально")
-//    public void onTestFailure(ITestResult result) {
-//            TakesScreenshot takesScreenshot= (TakesScreenshot) SeleniumUtiles.getDriver();
-//            File temporary = takesScreenshot.getScreenshotAs(OutputType.FILE);
-//            File screenShot = new File("C:\\Users\\user\\IdeaProjects\\ReqresForwardApi\\ScreenShots\\wholeScreenShot.png");
-//        try {
-//            FileUtils.copyFile(temporary, screenShot);
-//            screenShotAtachment();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    @Override
+    @Description("Вариант с сохранением скриншота локально")
+    public void onTestFailure(ITestResult result) {
+            TakesScreenshot takesScreenshot= (TakesScreenshot) SeleniumUtiles.getDriver();
+            File temporary = takesScreenshot.getScreenshotAs(OutputType.FILE);
+            File screenShot = new File("C:\\Users\\user\\IdeaProjects\\ReqresForwardApi\\ScreenShots\\wholeScreenShot.png");
+        try {
+            FileUtils.copyFile(temporary, screenShot);
+            screenShotAtachment();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Attachment(value = "screenshot", type = "image/png", fileExtension = ".png")
     public byte[] screenShotAtachment() throws IOException {
