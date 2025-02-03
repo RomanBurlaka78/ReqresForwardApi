@@ -9,7 +9,8 @@ import org.testng.annotations.Ignore;
 import java.time.Duration;
 public class SeleniumUtiles {
 
-    private static WebDriver driver = new ChromeDriver(new ChromeOptions().addArguments("--headless"));
+    //private static WebDriver driver = new ChromeDriver(new ChromeOptions().addArguments("--headless"));
+    private static WebDriver driver = new ChromeDriver(new ChromeOptions().addArguments());
     private static WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds((10)));
 
     public static WebDriver getDriver() {

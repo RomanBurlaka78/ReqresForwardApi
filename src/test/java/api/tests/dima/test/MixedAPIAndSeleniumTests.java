@@ -73,7 +73,7 @@ public class MixedAPIAndSeleniumTests {
         });
         Allure.step("fetch the element and make assertion", () -> {
             WebElement element = getWebDriverWait().until(ExpectedConditions.visibilityOf(getDriver().findElement(By.xpath("//span[contains(text(),'Горящие товары')]"))));
-            Assert.assertEquals(element.getText(), expectedResult);
+            Assert.assertEquals(element.getText(), expectedResult + 1);
         });
     }
 }
