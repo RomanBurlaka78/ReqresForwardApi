@@ -1,1 +1,0 @@
-SingleUserPojo{name='neo', job='the one', id='null', createdAt='null'}
