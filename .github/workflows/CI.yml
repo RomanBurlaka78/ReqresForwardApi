@@ -22,7 +22,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'corretto'
-          cache: 'maven'
+          cache: maven
 
       - name: Maven test
         run: mvn clean test
