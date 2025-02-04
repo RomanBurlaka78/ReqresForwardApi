@@ -1,1 +1,0 @@
-SingleUserPojo{name='morpheus', job='leader', id='260', createdAt='2025-01-29T14:01:54.558Z'}
