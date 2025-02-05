@@ -11,7 +11,7 @@ import org.openqa.selenium.WebDriver;
 import static io.qameta.allure.model.Status.BROKEN;
 import static io.qameta.allure.model.Status.FAILED;
 
-public class AllureTestLifecycleListener implements TestLifecycleListener{
+public class AllureTestLifecycleListener extends SeleniumUtiles implements TestLifecycleListener{
 
     public AllureTestLifecycleListener() {
     }
@@ -19,8 +19,8 @@ public class AllureTestLifecycleListener implements TestLifecycleListener{
     @Override
     public void beforeTestStop(TestResult result) {
         if (FAILED == result.getStatus() || BROKEN == result.getStatus()) {
-            AttachmentsForTests.saveScreenshot(SeleniumUtiles.getDriver());
-            SeleniumUtiles.getDriver().close();
+            AttachmentsForTests.saveScreenshot(getDriver());
+            //getDriver().quit();
         }
     }
 

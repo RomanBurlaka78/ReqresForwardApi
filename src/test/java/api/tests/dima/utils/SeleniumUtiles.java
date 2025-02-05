@@ -4,19 +4,27 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.Ignore;
+
 
 import java.time.Duration;
-public class SeleniumUtiles {
+public abstract class SeleniumUtiles {
 
-    //private static WebDriver driver = new ChromeDriver(new ChromeOptions().addArguments("--headless"));
-    private static WebDriver driver = new ChromeDriver(new ChromeOptions().addArguments());
-    private static WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds((10)));
+    private static WebDriver driver;
+    private static WebDriverWait webDriverWait;
 
-    public static WebDriver getDriver() {
+    public  WebDriver getDriver() {
+        if (driver != null) {
+            return driver;
+        }
+        driver = new ChromeDriver(new ChromeOptions().addArguments("--headless"));
+        //driver = new ChromeDriver();
         return driver;
     }
-    public static WebDriverWait getWebDriverWait(){
+    public WebDriverWait getWebDriverWait(){
+        if (webDriverWait != null) {
+            return webDriverWait;
+        }
+        webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(5));
         return webDriverWait;
     }
 }

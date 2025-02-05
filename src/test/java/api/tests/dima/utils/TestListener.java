@@ -15,12 +15,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class TestListener implements ITestListener {
+public class TestListener extends SeleniumUtiles implements ITestListener {
 
     @Override
     @Description("Вариант с сохранением скриншота локально")
     public void onTestFailure(ITestResult result) {
-            TakesScreenshot takesScreenshot= (TakesScreenshot) SeleniumUtiles.getDriver();
+            TakesScreenshot takesScreenshot= (TakesScreenshot) getDriver();
             File temporary = takesScreenshot.getScreenshotAs(OutputType.FILE);
             File screenShot = new File("C:\\Users\\user\\IdeaProjects\\ReqresForwardApi\\ScreenShots\\wholeScreenShot.png");
         try {
