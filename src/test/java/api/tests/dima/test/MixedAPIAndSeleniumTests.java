@@ -56,5 +56,17 @@ public class MixedAPIAndSeleniumTests extends SeleniumUtiles {
             Assert.assertEquals(element.getText(), expectedResult +1 );
         });
     }
+
+    @Test
+    @Story("Tests on Selenium")
+    @Severity(SeverityLevel.NORMAL)
+    @Owner("Dima")
+    @Description("This test is entended to pass")
+    public void testAv(){
+        getDriver().get("https://av.by/");
+        getDriver().manage().window().maximize();
+        WebElement element = getDriver().findElement(By.xpath("//div[@class='header__logo']"));
+        Assert.assertEquals(element.getDomAttribute("class"),"header__logo");
+    }
 }
 
