@@ -6,33 +6,25 @@ import io.restassured.specification.ResponseSpecification;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 
 import java.lang.reflect.Method;
 
 public abstract class BaseTest {
 
-    public static Specifications specifications = new Specifications();
-    public static RequestSpecification requestSpec;
-    public static ResponseSpecification responseSpec;
+    private static final Specifications specifications = new Specifications();
+    protected static RequestSpecification requestSpec;
+    protected static ResponseSpecification responseSpec;
 
-    public static void spec(){
-        requestSpec = specifications.setupRequest().filter(new AllureRestAssured());
-        responseSpec = specifications.setupResponse();
-    }
-
-    public static void setupSpec() {
-        requestSpec = specifications.setupRequest();
-        responseSpec = specifications.setupResponse();
-
+    @BeforeSuite
+    public void init(){
+        specifications.installSpec();
     }
 
     @BeforeMethod
-    protected void beforeMethod(Method method) {
+    public void beforeMethod(Method method, ITestResult testResult){
         ProjectUtils.logf("Запускается %s.%s", this.getClass().getName(), method.getName());
 
-        spec();
-        setupSpec();
-        specifications.installSpec();
     }
 
     @AfterMethod

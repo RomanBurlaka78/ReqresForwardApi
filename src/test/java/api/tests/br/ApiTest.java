@@ -16,8 +16,7 @@ import org.testng.annotations.Ignore;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
+import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.HashMap;
@@ -50,6 +49,7 @@ public class ApiTest extends BaseTest {
         Assert.assertEquals(listHashMapUsers.get("first_name"), "Michael");
         Assert.assertEquals(listHashMapUsers.get("last_name"), "Lawson");
         Assert.assertEquals(listHashMapUsers.get("avatar"), "https://reqres.in/img/faces/7-image.jpg");
+        System.out.println(requestSpecification.toString());
     }
 
 

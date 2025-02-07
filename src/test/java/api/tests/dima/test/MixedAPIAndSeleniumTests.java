@@ -14,7 +14,7 @@ import java.io.IOException;
 import static io.restassured.RestAssured.given;
 
 //@Listeners({TestListener.class})
-@Epic("Api tests")
+@Epic("tests version Dima")
 @Feature("Mixed tests that are being executed via Rest Assured and Selenium")
 public class MixedAPIAndSeleniumTests extends SeleniumUtiles {
 
@@ -28,13 +28,12 @@ public class MixedAPIAndSeleniumTests extends SeleniumUtiles {
         Allure.parameter("end point for API", products);
         Response response =
                 given().
-                        filter(new AllureRestAssured()).
-                        when().
-                        get("https://simple-grocery-store-api.glitch.me" + products).
-                        then().
-                        statusCode(200).
-                        extract().
-                        response();
+                when().
+                    get("https://simple-grocery-store-api.glitch.me" + products).
+                then().
+                    statusCode(200).
+                    extract().
+                    response();
 
         System.out.println(response.asPrettyString());
 

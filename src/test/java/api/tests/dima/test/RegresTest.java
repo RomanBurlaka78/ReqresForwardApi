@@ -1,5 +1,6 @@
 package api.tests.dima.test;
 
+import api.base.BaseTest;
 import api.base.Specifications;
 import api.pojo.Registration;
 import api.pojo.SingleUserPojo;
@@ -22,26 +23,16 @@ import org.testng.annotations.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import static io.restassured.RestAssured.given;
+
+import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.equalTo;
 
-@Epic("Api tests")
-@Feature("Dima`s version of regres api tests")
+@Epic("tests version Dima")
 @Link("https://reqres.in/")
-public class RegresTest {
+public class RegresTest extends BaseTest {
 
-    protected Specifications specifications = new Specifications();
-    protected RequestSpecification requestSpecification;
-    protected ResponseSpecification responseSpecification;
-
-    protected SingleUserPojo reqwestSingleUserPojo = new SingleUserPojo("Neo", "Matrica pioner");
-    protected Registration registration = new Registration("eve.holt@reqres.in", "pistolet");
-
-    @BeforeClass
-    public void setUp(){
-        requestSpecification = specifications.setupRequest();
-        responseSpecification = specifications.setupResponse();
-    }
+    private SingleUserPojo reqwestSingleUserPojo = new SingleUserPojo("Neo", "Matrica pioner");
+    private Registration registration = new Registration("eve.holt@reqres.in", "pistolet");
 
     @Test
     @Description("Test all the user`s id that are presented on the page, line-45")
@@ -53,7 +44,6 @@ public class RegresTest {
         Response response =
                 given().
                     spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                     get("/api/users?page=2").
                 then().
                     spec(responseSpecification).
@@ -80,10 +70,8 @@ public class RegresTest {
 
         File file = new File("src/main/resources/JsonSchemaForListOfUsers.json");
         String schema = FileUtils.readFileToString(file, "UTF-8");
-            //given(requestSpecification.filter(new AllureRestAssured()),responseSpecification).
             given().
                 spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                 get("/api/users?page=2").
             then().
                 spec(responseSpecification).
@@ -105,15 +93,14 @@ public class RegresTest {
     public void testVerifyUsersId(){
 
         int idOfUser =
-                given().
-                    spec(requestSpecification).
-                    filter(new AllureRestAssured()).
-                when().
-                    get("/api/users/2").
-                then().
-                    spec(responseSpecification).
-                    extract().
-                    jsonPath().getInt("data.id");
+            given().
+                spec(requestSpecification).
+            when().
+                get("/api/users/2").
+            then().
+                spec(responseSpecification).
+                extract().
+                jsonPath().getInt("data.id");
 
         Assert.assertEquals(idOfUser,2);
     }
@@ -127,16 +114,15 @@ public class RegresTest {
 
         String expectedResult = "{}";
         String response =
-                given().
-                    spec(requestSpecification).
-                    filter(new AllureRestAssured()).
-                when().
-                    get("/api/users/23").
-                then().
-                    spec(responseSpecification).
-                    assertThat().
-                    statusCode(404).
-                    extract().asString();
+            given().
+                spec(requestSpecification).
+            when().
+                get("/api/users/23").
+            then().
+                spec(responseSpecification).
+                assertThat().
+                statusCode(404).
+                extract().asString();
 
         Assert.assertEquals(response, expectedResult);
     }
@@ -152,7 +138,6 @@ public class RegresTest {
         Response response =
                 given().
                     spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                 when().
                     get("/api/users/23").
                 then().
@@ -174,7 +159,6 @@ public class RegresTest {
         Response response =
                 given().
                     spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                 when().
                     get("/api/unknown").
                 then().
@@ -195,7 +179,6 @@ public class RegresTest {
         int idOfTheResourse =
                 given().
                     spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                 when().
                     get("/api/unknown/2").
                 then().
@@ -219,7 +202,6 @@ public class RegresTest {
         Response response =
                 given().
                     spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                 when().
                     get("/api/unknown/"+str).
                 then().
@@ -243,7 +225,6 @@ public class RegresTest {
         SingleUserPojo responseSingleUserPojo =
                 given().
                     spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                 when().
                     body(reqwestSingleUserPojo).
                     post("/api/users").
@@ -264,7 +245,6 @@ public class RegresTest {
 
                 given().
                   spec(requestSpecification).
-                  filter(new AllureRestAssured()).
                 when().
                     body(reqwestSingleUserPojo).
                     post("/api/users").
@@ -287,7 +267,6 @@ public class RegresTest {
         SingleUserPojo responseSingleUserPojo =
                 given().
                     spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                 when().
                     body(reqwestSingleUserPojo).
                     put("/api/users/2").
@@ -308,7 +287,6 @@ public class RegresTest {
         Response response =
                 given().
                     spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                 when().
                     delete("/api/users/2").
                 then().
@@ -331,7 +309,6 @@ public class RegresTest {
         String responseToken =
                 given().
                     spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                 when().
                     body(registration).
                     post("/api/register").
@@ -356,7 +333,6 @@ public class RegresTest {
         String responseMessage =
                 given().
                     spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                     body(file).
                 when().
                     post("/api/register").
@@ -379,7 +355,6 @@ public class RegresTest {
 
                 given().
                     spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                 when().
                     body(new Registration("eve.holt@reqres.in", "cityslicka")).
                     post("api/login").
@@ -409,7 +384,6 @@ public class RegresTest {
         String responseMessage =
                 given().
                     spec(requestSpecification).
-                    filter(new AllureRestAssured()).
                     body(temp).
                 when().
                     post("/api/register").

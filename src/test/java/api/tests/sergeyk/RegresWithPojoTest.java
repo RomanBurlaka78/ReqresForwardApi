@@ -19,7 +19,8 @@ import static io.restassured.RestAssured.rootPath;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThan;
 
-@Epic("Api tests")
+//@Epic("Api tests")
+@Epic("tests version Sergey")
 public class RegresWithPojoTest extends BaseTest {
 
     private static final String NAME = "morpheus";
@@ -36,7 +37,10 @@ public class RegresWithPojoTest extends BaseTest {
     @Owner("SergeyK")
     public void testListUsers() {
 
-        Response response = given(requestSpec.queryParam("page", 2), responseSpec)
+        Response response =
+                //given(requestSpec.queryParam("page", 2), responseSpec)
+                given()
+                .queryParam("page", 2)
                 .get("/api/users")
                 .then()
                 .statusCode(200)
@@ -61,7 +65,10 @@ public class RegresWithPojoTest extends BaseTest {
     @Owner("SergeyK")
     public void testSingleUser() {
 
-        UserPojo user = given(requestSpec.pathParam("id", USER_ID), responseSpec)
+        UserPojo user =
+                //given(requestSpec.pathParam("id", USER_ID), responseSpec)
+                given()
+                .pathParam("id", USER_ID)
                 .get("/api/users/{id}")
                 .then()
                 .statusCode(200)
@@ -80,7 +87,10 @@ public class RegresWithPojoTest extends BaseTest {
     @Owner("SergeyK")
     public void testSingleUserNotFound() {
 
-        RestAssured.given(requestSpec.pathParam("id", NOT_USER_ID), responseSpec)
+        RestAssured.
+                //given(requestSpec.pathParam("id", NOT_USER_ID), responseSpec)
+                given()
+                .pathParam("id", NOT_USER_ID)
                 .get("/api/users/{id}")
                 .then()
                 .statusCode(404)
@@ -94,7 +104,9 @@ public class RegresWithPojoTest extends BaseTest {
     @Owner("SergeyK")
     public void testListResource() {
 
-        Response response = given(requestSpec, responseSpec)
+        Response response =
+                //given(requestSpec, responseSpec)
+                given()
                 .get("/api/unknown")
                 .then()
                 .statusCode(200)
@@ -116,7 +128,9 @@ public class RegresWithPojoTest extends BaseTest {
     @Owner("SergeyK")
     public void testSingleResource() {
 
-        ResourcePojo resource = given(requestSpec.pathParam("id", USER_ID), responseSpec)
+        ResourcePojo resource =
+                //given(requestSpec.pathParam("id", USER_ID), responseSpec)
+                given().pathParam("id", USER_ID)
                 .get("/api/unknown/{id}")
                 .then()
                 .statusCode(200)
@@ -135,7 +149,10 @@ public class RegresWithPojoTest extends BaseTest {
     @Owner("SergeyK")
     public void testSingleResourceNotFound() {
 
-        RestAssured.given(requestSpec.pathParam("id", NOT_USER_ID), responseSpec)
+        RestAssured.
+                //given(requestSpec.pathParam("id", NOT_USER_ID), responseSpec)
+                given()
+                .pathParam("id", NOT_USER_ID)
                 .get("/api/unknown/{id}")
                 .then()
                 .statusCode(404)
@@ -151,7 +168,10 @@ public class RegresWithPojoTest extends BaseTest {
 
         CreateSingleUserPojo userBody = new CreateSingleUserPojo(NAME, JOB);
 
-        SingleUserPojo user = given(requestSpec.body(userBody), responseSpec)
+        SingleUserPojo user =
+                //given(requestSpec.body(userBody), responseSpec)
+                given()
+                .body(userBody)
                 .post("/api/users")
                 .then()
                 .statusCode(201)
@@ -169,7 +189,11 @@ public class RegresWithPojoTest extends BaseTest {
 
         CreateSingleUserPojo userBody = new CreateSingleUserPojo(NAME, PUT_JOB);
 
-        SingleUserPojo user = given(requestSpec.pathParam("id", USER_ID).body(userBody), responseSpec)
+        SingleUserPojo user =
+                //given(requestSpec.pathParam("id", USER_ID).body(userBody), responseSpec)
+                given()
+                .pathParam("id", USER_ID)
+                .body(userBody)
                 .put("/api/users/{id}")
                 .then()
                 .statusCode(200)
@@ -203,7 +227,10 @@ public class RegresWithPojoTest extends BaseTest {
     @Owner("SergeyK")
     public void testDelete() {
 
-        RestAssured.given(requestSpec.pathParam("id", USER_ID), responseSpec)
+        RestAssured.
+                //given(requestSpec.pathParam("id", USER_ID), responseSpec)
+                given()
+                .pathParam("id", USER_ID)
                 .delete("/api/users/{id}")
                 .then()
                 .statusCode(204)
@@ -219,7 +246,10 @@ public class RegresWithPojoTest extends BaseTest {
 
         Registration registerBody = new Registration("eve.holt@reqres.in", "pistol");
 
-        RegisterPojo register = given(requestSpec.body(registerBody), responseSpec)
+        RegisterPojo register =
+                //given(requestSpec.body(registerBody), responseSpec)
+                given()
+                .body(registerBody)
                 .post("/api/register")
                 .then()
                 .statusCode(200)
@@ -237,7 +267,10 @@ public class RegresWithPojoTest extends BaseTest {
 
         Registration registerBody = new Registration("sydney@file", null);
 
-        ErrorPojo error = given(requestSpec.body(registerBody), responseSpec)
+        ErrorPojo error =
+                //given(requestSpec.body(registerBody), responseSpec)
+                given()
+                .body(registerBody)
                 .post("/api/register")
                 .then()
                 .statusCode(400)
@@ -254,7 +287,10 @@ public class RegresWithPojoTest extends BaseTest {
 
         Registration login = new Registration("eve.holt@reqres.in", "cityslicka");
 
-        TokenPojo token = given(requestSpec.body(login), responseSpec)
+        TokenPojo token =
+                //given(requestSpec.body(login), responseSpec)
+                given()
+                .body(login)
                 .post("/api/login")
                 .then()
                 .statusCode(200)
@@ -271,7 +307,10 @@ public class RegresWithPojoTest extends BaseTest {
 
         Registration login = new Registration("peter@klaven", null);
 
-        ErrorPojo error = given(requestSpec.body(login), responseSpec)
+        ErrorPojo error =
+                //given(requestSpec.body(login), responseSpec)
+                given()
+                .body(login)
                 .post("/api/login")
                 .then()
                 .statusCode(400)
@@ -286,7 +325,10 @@ public class RegresWithPojoTest extends BaseTest {
     @Owner("SergeyK")
     public void testDelayedResponse() {
 
-        RestAssured.given(requestSpec.queryParam("delay", 3), responseSpec)
+        RestAssured.
+                //given(requestSpec.queryParam("delay", 3), responseSpec)
+                given()
+                .queryParam("delay", 3)
                 .get("/api/users")
                 .then()
                 .statusCode(200)
