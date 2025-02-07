@@ -1,6 +1,8 @@
 package api.tests.dima.test;
 
+import api.base.BaseTest;
 import io.qameta.allure.*;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.qameta.allure.testng.TestInstanceParameter;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -8,9 +10,9 @@ import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
 
-@Epic("Api tests")
-@Feature("Dima`s version of regres api tests with use of @UseFactoryAprouchTest")
-public class UseFactoryAprouchTest {
+@Epic("tests version Dima")
+@Feature("Rest Assured tests with @Factory")
+public class UseFactoryAprouchTest extends BaseTest {
 
     @TestInstanceParameter
     private String combined;

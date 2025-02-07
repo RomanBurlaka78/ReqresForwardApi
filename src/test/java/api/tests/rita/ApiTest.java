@@ -14,7 +14,8 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.rootPath;
 import static org.hamcrest.Matchers.*;
 
-@Epic("Api tests")
+//@Epic("Api tests")
+@Epic("tests version Margarita")
 @Feature("User Management")
 public class ApiTest extends BaseTest {
 
@@ -29,7 +30,10 @@ public class ApiTest extends BaseTest {
     public void testGetListUsers() {
 
         step("Step 1. Send GET-request", () -> {
-        Response response = given(requestSpec.queryParam("page", 2), responseSpec)
+        Response response =
+                //given(requestSpec.queryParam("page", 2), responseSpec)
+                given().
+                queryParam("page", 2)
                 .get("/api/users");
 
         Allure.addAttachment("Response body", response.asString());
@@ -40,7 +44,10 @@ public class ApiTest extends BaseTest {
         });
 
         step("Step 2. Extract users", () -> {
-        List<?> users = given(requestSpec.queryParam("page", 2), responseSpec)
+        List<?> users =
+                //given(requestSpec.queryParam("page", 2), responseSpec)
+                given()
+                .queryParam("page", 2)
                 .get("/api/users")
                 .then()
                 .extract().body().jsonPath().getList("data");
@@ -64,11 +71,13 @@ public class ApiTest extends BaseTest {
         int id = 2;
 
         UserPojo response = step("Step 1. Send GET-request to https://reqres.in/api/users/" + id, () -> {
-        return given(requestSpec.pathParam("id", id), responseSpec)
-                .get("/api/users/{id}")
-                .then()
-                .statusCode(200)
-                .extract().body().jsonPath().getObject("data", UserPojo.class);
+        //return given(requestSpec.pathParam("id", id), responseSpec)
+            return given()
+                        .pathParam("id", id)
+                        .get("/api/users/{id}")
+                    .then()
+                        .statusCode(200)
+                        .extract().body().jsonPath().getObject("data", UserPojo.class);
         });
 
         step("Step 2. Verify response", () -> {
@@ -94,7 +103,9 @@ public class ApiTest extends BaseTest {
         int id = 23;
 
         Response response = step("Step 1. Send GET-request with invalid id" + id, () ->{
-        return given(requestSpec.pathParam("id", id), responseSpec)
+        //return given(requestSpec.pathParam("id", id), responseSpec)
+        return given()
+                .pathParam("id", id)
                 .get("/api/users/{id}")
                 .then()
                 .statusCode(404)
@@ -125,11 +136,13 @@ public class ApiTest extends BaseTest {
         CreateSingleUserPojo postBody = new CreateSingleUserPojo(name, job);
 
         SingleUserPojo response = step("Step 1. Send POST-request to" + endpoint, () -> {
-            return given(requestSpec.body(postBody), responseSpec)
-                            .post(endpoint)
-                            .then()
-                            .statusCode(201)
-                            .extract().as(SingleUserPojo.class);
+            //return given(requestSpec.body(postBody), responseSpec)
+            return given()
+                        .body(postBody)
+                        .post(endpoint)
+                    .then()
+                        .statusCode(201)
+                        .extract().as(SingleUserPojo.class);
         });
 
         step("Step 2. Verify user details: name - " + name + ", job - " + job, () -> {
@@ -158,11 +171,13 @@ public class ApiTest extends BaseTest {
         SingleUserPojo updateUser = new SingleUserPojo(name, job);
 
         SingleUserPojo response = step("Step 1. Send PUT-request to endpoint: " + endpoint, () -> {
-            return given(requestSpec.body(updateUser), responseSpec)
-                            .put(endpoint)
-                            .then()
-                            .statusCode(200)
-                            .extract().as(SingleUserPojo.class);
+            //return given(requestSpec.body(updateUser), responseSpec)
+            return given()
+                        .body(updateUser)
+                        .put(endpoint)
+                    .then()
+                        .statusCode(200)
+                        .extract().as(SingleUserPojo.class);
                 });
 
         step("Step 2. Verify user details: name - " + name + ", job - " + job, () -> {
@@ -191,7 +206,9 @@ public class ApiTest extends BaseTest {
         SingleUserPojo updateUser = new SingleUserPojo(name, job);
 
         SingleUserPojo response = step("Step 1. Send PATCH-request to endpoint: " + endpoint, () -> {
-            return given(requestSpec.body(updateUser), responseSpec)
+            //return given(requestSpec.body(updateUser), responseSpec)
+            return given()
+                    .body(updateUser)
                     .patch(endpoint)
                     .then()
                     .statusCode(200)
@@ -219,7 +236,8 @@ public class ApiTest extends BaseTest {
         String endpoint = "api/users/2";
 
         step("Step 1. Send DELETE-request to endpoint: " + endpoint, () -> {
-            given(requestSpec)
+            //given(requestSpec)
+            given()
             .delete(endpoint)
             .then()
             .statusCode(204)
@@ -245,11 +263,13 @@ public class ApiTest extends BaseTest {
         Registration registerUser = new Registration(email, pass);
 
         RegisterPojo response = step("Step 1. Send POST-request", () -> {
-                return given(requestSpec.body(registerUser), responseSpec)
-                .post(endpoint)
-                .then()
-                .statusCode(200)
-                .extract().body().jsonPath().getObject(rootPath, RegisterPojo.class);
+                //return given(requestSpec.body(registerUser), responseSpec)
+                return given()
+                        .body(registerUser)
+                        .post(endpoint)
+                        .then()
+                        .statusCode(200)
+                        .extract().body().jsonPath().getObject(rootPath, RegisterPojo.class);
         });
 
         step("Step 2. Verify User details", () -> {
@@ -275,11 +295,13 @@ public class ApiTest extends BaseTest {
         Registration login = new Registration(email, pass);
 
         RegisterPojo response = step("Step 1. Send POST-request", () -> {
-                return given(requestSpec.body(login), responseSpec)
-                .post(endpoint)
-                .then()
-                .statusCode(200)
-                .extract().body().jsonPath().getObject(rootPath, RegisterPojo.class);
+                //return given(requestSpec.body(login), responseSpec)
+                return given().
+                        body(login)
+                        .post(endpoint)
+                        .then()
+                        .statusCode(200)
+                        .extract().body().jsonPath().getObject(rootPath, RegisterPojo.class);
         });
 
         step("Step 2. Verify response", () -> {
@@ -303,11 +325,13 @@ public class ApiTest extends BaseTest {
         Registration login = new Registration(email, null);
 
         ErrorPojo response = step("Step 1. Send POST-request without password", () -> {
-                return given(requestSpec.body(login), responseSpec)
-                .post(endpoint)
-                .then()
-                .statusCode(400)
-                .extract().body().jsonPath().getObject(rootPath, ErrorPojo.class);
+                //return given(requestSpec.body(login), responseSpec)
+                return given()
+                        .body(login)
+                        .post(endpoint)
+                        .then()
+                        .statusCode(400)
+                        .extract().body().jsonPath().getObject(rootPath, ErrorPojo.class);
         });
 
         step("Step 2. Verify the error", () -> {
@@ -331,11 +355,13 @@ public class ApiTest extends BaseTest {
         String endpoint = "/api/unknown/{id}";
 
         ResourcePojo response = step("Step 1. Send GET-request to endpoint: " + endpoint + "with id = " + id, () -> {
-                return given(requestSpec.pathParam("id", id), responseSpec)
-                .get(endpoint)
-                .then()
-                .statusCode(200)
-                .extract().body().jsonPath().getObject("data", ResourcePojo.class);
+                //return given(requestSpec.pathParam("id", id), responseSpec)
+                return given()
+                        .pathParam("id", id)
+                        .get(endpoint)
+                        .then()
+                        .statusCode(200)
+                        .extract().body().jsonPath().getObject("data", ResourcePojo.class);
         });
 
         step("Step 2. Verify user details", () -> {
@@ -361,15 +387,19 @@ public class ApiTest extends BaseTest {
         int objects = 3;
 
         step("Step 1. Send GET-request to endpoint " + endpoint, () -> {
-                given(requestSpec.queryParam("delay", objects), responseSpec)
-                .get(endpoint)
-                .then()
-                .statusCode(200)
-                .body("data", hasSize(greaterThan(0)));
+                //given(requestSpec.queryParam("delay", objects), responseSpec)
+                given()
+                        .queryParam("delay", objects)
+                        .get(endpoint)
+                        .then()
+                        .statusCode(200)
+                        .body("data", hasSize(greaterThan(0)));
         });
 
         step("Step 2. Extract the response", () -> {
-        List<?> users = given(requestSpec.queryParam("delay", objects), responseSpec)
+        List<?> users =
+                //iven(requestSpec.queryParam("delay", objects), responseSpec)
+                given().queryParam("delay", objects)
                 .get(endpoint)
                 .then()
                 .extract().body().jsonPath().getList("data");

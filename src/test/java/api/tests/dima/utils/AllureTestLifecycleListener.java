@@ -8,10 +8,11 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
+import static io.qameta.allure.Allure.attachment;
 import static io.qameta.allure.model.Status.BROKEN;
 import static io.qameta.allure.model.Status.FAILED;
 
-public class AllureTestLifecycleListener implements TestLifecycleListener {
+public class AllureTestLifecycleListener extends SeleniumUtiles implements TestLifecycleListener{
 
     public AllureTestLifecycleListener() {
     }
@@ -19,8 +20,8 @@ public class AllureTestLifecycleListener implements TestLifecycleListener {
     @Override
     public void beforeTestStop(TestResult result) {
         if (FAILED == result.getStatus() || BROKEN == result.getStatus()) {
-            WebDriver driver = SeleniumUtiles.getDriver();
-            AttachmentsForTests.saveScreenshot(driver);
+            attachment("result`s name",result.getName());
+            AttachmentsForTests.saveScreenshot(getDriver());
         }
     }
 

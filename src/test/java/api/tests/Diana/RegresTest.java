@@ -14,7 +14,8 @@ import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
-@Epic("Api tests")
+//@Epic("Api tests")
+@Epic("tests version Diana")
 public class RegresTest extends BaseTest {
     protected SingleUserPojo reqwestSUP = new SingleUserPojo("morpheus", "leader", "2025-01-09T12:34:34.000Z");
     protected Registration registration = new Registration("eve.holt@reqres.in", "pistol");
@@ -30,12 +31,13 @@ public class RegresTest extends BaseTest {
     public void testVerifySingleUser() {
 
         Allure.step("Step 1. Send GET - request to https://reqres.in/api/users/");
-        UserPojo singleUsers = given(requestSpec.body(singleuserP), responseSpec)
-
-                .get("/api/users/2")
+        UserPojo singleUsers =
+                //given(requestSpec.body(singleuserP), responseSpec)
+                given()
+                    .get("/api/users/2")
                 .then()
-                .statusCode(200)
-                .extract().body().jsonPath().getObject("data", UserPojo.class);
+                    .statusCode(200)
+                    .extract().body().jsonPath().getObject("data", UserPojo.class);
 
         Allure.step("Step 2. Verify response");
             Assert.assertEquals(singleUsers.getId(), 2);
@@ -55,7 +57,9 @@ public class RegresTest extends BaseTest {
     public void testSingleUserNotExist() {
 
         Allure.step("Step 1. Send GET - request with invalid id");
-        String response = given(requestSpec,responseSpec)
+        String response =
+                //given(requestSpec,responseSpec)
+                given()
                 .get("/api/users/23")
                 .then()
                 .statusCode(404)
@@ -74,7 +78,9 @@ public class RegresTest extends BaseTest {
     public void testGetListOfResource() {
 
         Allure.step("Step 1. Send GET - request https://reqres.in");
-        List<ResourcePojo> resources = given(requestSpec,responseSpec)
+        List<ResourcePojo> resources =
+                //given(requestSpec,responseSpec)
+                given()
                 .get("/api/unknown")
                 .then()
                 .statusCode(200)
@@ -97,7 +103,9 @@ public class RegresTest extends BaseTest {
     public void testGetSingleResourceId() {
 
         Allure.step("Step 1. Send GET - request https://reqres.in");
-        ResourcePojo resp = given(requestSpec,responseSpec)
+        ResourcePojo resp =
+                //given(requestSpec,responseSpec)
+                given()
                 .get("/api/unknown/2")
                 .then()
                 .statusCode(200)
@@ -120,7 +128,9 @@ public class RegresTest extends BaseTest {
     public void testSingleResourceIdNotExist() {
 
         Allure.step("Step 1. Send GET - request with invalid id");
-        String response = given(requestSpec,responseSpec)
+        String response =
+                //given(requestSpec,responseSpec)
+                given()
                 .get("/api/unknown/23")
                 .then()
                 .statusCode(404)
@@ -139,7 +149,10 @@ public class RegresTest extends BaseTest {
     public void testCreateUser() {
 
         Allure.step("Step 1. Send POST - request to https://reqres.in");
-        SingleUserPojo response = given(requestSpec.body(reqwestSUP),responseSpec)
+        SingleUserPojo response =
+                //given(requestSpec.body(reqwestSUP),responseSpec)
+                given().
+                body(reqwestSUP)
                 .post("/api/users")
                 .then()
                 .statusCode(201)
@@ -161,7 +174,10 @@ public class RegresTest extends BaseTest {
         reqwestSUP.setJob("zion resident");
 
         Allure.step("Step 1. Send PUT - request to https://reqres.in");
-        SingleUserPojo response = given(requestSpec.body(reqwestSUP),responseSpec)
+        SingleUserPojo response =
+                //given(requestSpec.body(reqwestSUP),responseSpec)
+                given().
+                body(reqwestSUP)
                 .put("/api/users/2")
                 .then()
                 .statusCode(200)
@@ -183,7 +199,10 @@ public class RegresTest extends BaseTest {
         reqwestSUP.setCreatedAt("2025-01-09T12:30:37.398Z");
 
         Allure.step("Step 1. Send PATCH - request to https://reqres.in");
-        SingleUserPojo response = given(requestSpec.body(reqwestSUP),responseSpec)
+        SingleUserPojo response =
+                //given(requestSpec.body(reqwestSUP),responseSpec)
+                given().
+                body(reqwestSUP)
                 .patch("/api/users/2")
                 .then()
                 .statusCode(200)
@@ -201,7 +220,9 @@ public class RegresTest extends BaseTest {
     public void testDeleteUser() {
 
         Allure.step("Step 1. Send DELETE - request to https://reqres.in");
-        Response response = given(requestSpec,responseSpec)
+        Response response =
+                //given(requestSpec,responseSpec)
+                given()
                 .delete("/api/users/2")
                 .then()
                 .statusCode(204)
@@ -220,7 +241,10 @@ public class RegresTest extends BaseTest {
     public void testRegisterUserSuccessful() {
 
         Allure.step("Step 1. Send POST - request to https://reqres.in");
-        RegisterPojo register = given(requestSpec.body(registration),responseSpec)
+        RegisterPojo register =
+                //given(requestSpec.body(registration),responseSpec)
+                given().
+                body(registration)
                 .post("/api/register")
                 .then()
                 .statusCode(200)
@@ -243,7 +267,10 @@ public class RegresTest extends BaseTest {
         registration.setPassword("");
 
         Allure.step("Step 1. Send POST - request to https://reqres.in");
-        ErrorPojo error = given(requestSpec.body(registration),responseSpec)
+        ErrorPojo error =
+                //given(requestSpec.body(registration),responseSpec)
+                given().
+                body(registration)
                 .post("/api/register")
                 .then()
                 .statusCode(400)
@@ -265,7 +292,10 @@ public class RegresTest extends BaseTest {
         registration.setPassword("cityslicka");
 
         Allure.step("Step 1. Send POST - request to https://reqres.in");
-        TokenPojo token = given(requestSpec.body(registration),responseSpec)
+        TokenPojo token =
+                //given(requestSpec.body(registration),responseSpec)
+                given().
+                body(registration)
                 .post("/api/login")
                 .then()
                 .statusCode(200)
@@ -287,7 +317,10 @@ public class RegresTest extends BaseTest {
         registration.setPassword("");
 
         Allure.step("Step 1. Send POST - request to https://reqres.in");
-        ErrorPojo response = given(requestSpec.body(registration),responseSpec)
+        ErrorPojo response =
+                //given(requestSpec.body(registration),responseSpec)
+                given().
+                body(registration)
                 .post("/api/login")
                 .then()
                 .statusCode(400)
@@ -306,7 +339,9 @@ public class RegresTest extends BaseTest {
     public void testDelayedResponse() {
 
         Allure.step("Step 1. Send GET - request to https://reqres.in");
-        Response response = given(requestSpec,responseSpec)
+        Response response =
+                //given(requestSpec,responseSpec)
+                given()
                 .get("/api/users?delay=3")
                 .then()
                 .statusCode(200)
