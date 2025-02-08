@@ -23,11 +23,27 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
           cache: 'maven'
+#start new added
+      - name: docker-compose build
+        run: docker-compose build
+
+      - name: docker-compose start tests
+        run: docker-compose up
+#end
 
       - name: Maven test
         run: mvn clean test
         env:
           CI_RUN: true
+#start       new added
+      - name: Attach screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/screenshots
+
+#end
 
       - name: Get Allure history
         uses: actions/checkout@v4
