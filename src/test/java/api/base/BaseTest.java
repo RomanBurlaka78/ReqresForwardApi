@@ -5,6 +5,7 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
 import java.lang.reflect.Method;
@@ -25,14 +26,16 @@ public abstract class BaseTest {
         responseSpec = specifications.setupResponse();
 
     }
+    @BeforeClass
+    protected void addSpecToClass(){
+        specifications.installSpec();
+    }
 
     @BeforeMethod
     protected void beforeMethod(Method method) {
         ProjectUtils.logf("Запускается %s.%s", this.getClass().getName(), method.getName());
-
         spec();
-        setupSpec();
-        specifications.installSpec();
+
     }
 
     @AfterMethod
