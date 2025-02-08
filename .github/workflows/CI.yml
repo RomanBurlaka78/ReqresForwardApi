@@ -23,27 +23,24 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
           cache: 'maven'
-#start new added
-      - name: docker-compose build
+
+      - name: Set up Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
+      - name: Build with Docker Compose
         run: docker-compose build
 
-      - name: docker-compose start tests
+      - name: Start Docker Compose services
         run: docker-compose up
-#end
 
-      - name: Maven test
-        run: mvn clean test
-        env:
-          CI_RUN: true
-#start       new added
       - name: Attach screenshots
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: screenshots
           path: ${{ github.workspace }}/screenshots
-
-#end
 
       - name: Get Allure history
         uses: actions/checkout@v4
@@ -70,3 +67,7 @@ jobs:
           PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PUBLISH_BRANCH: gh-pages
           PUBLISH_DIR: allure-history
+
+      - name: Stop Docker Compose services
+        if: always()
+        run: docker-compose down
