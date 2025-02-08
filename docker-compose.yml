@@ -6,4 +6,4 @@ services:
     image: forward-offer-fall-2024
     container_name: test-container
     volumes:
-      - ./target/allure-results:/target/allure-results
+      - ./target/allure-results:/app/target/allure-results
