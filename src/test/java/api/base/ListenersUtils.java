@@ -1,10 +1,20 @@
 package api.base;
 
+import io.qameta.allure.Allure;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
+import java.io.ByteArrayInputStream;
+
 public class ListenersUtils implements ITestListener {
+
+public  WebDriver driver;
+
+
     @Override
     public void onTestStart(ITestResult result) {
         System.out.println("Start test: " + result.getName());
@@ -18,9 +28,18 @@ public class ListenersUtils implements ITestListener {
     }
 
     @Override
-    public void onTestFailure(ITestResult result) {
+    public void onTestFailure(ITestResult testResult) {
         System.out.println("***FAILED******FAILED******FAILED***");
-        System.out.println("Test failed: " + result.getName());
+        System.out.println("Test failed: " + testResult.getName());
+        if (!testResult.isSuccess()) {
+            Allure.addAttachment(
+                    "screenshot.png",
+                    "image/png",
+                    new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)),
+                    "png");
+        }
+
+
     }
 
     @Override
