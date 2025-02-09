@@ -20,16 +20,19 @@ public class Specifications {
                 .build();
     }
 
-
     public ResponseSpecification setupResponse() {
         return new ResponseSpecBuilder()
                 .log(LogDetail.ALL)
                 .build();
     }
 
-
     public void installSpec() {
         RestAssured.requestSpecification = setupRequest();
         RestAssured.responseSpecification = setupResponse();
+    }
+
+    public void specificationsNull() {
+        RestAssured.requestSpecification = null;
+        RestAssured.responseSpecification = null;
     }
 }

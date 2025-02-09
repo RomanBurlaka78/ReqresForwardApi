@@ -36,8 +36,8 @@ public class ApiTest extends BaseTest {
     @Story("Get response")
     @Description("Get list Of Users")
     public void testGetListOfUsers() {
-        List<Object> itemList = given()
-                .when()
+        List<Object> itemList = given(requestSpec,responseSpec)
+//                .when()
                 .get("/api/users?page=2")
                 .then()
                 .statusCode(200)
@@ -59,8 +59,8 @@ public class ApiTest extends BaseTest {
     @Story("Get response")
     @Description("Get list of users with deserialization Pojo class")
     public void testGetListUserPojo() {
-        List<DataListUsers> itemList = given()
-                .when()
+        List<DataListUsers> itemList = given(requestSpec,responseSpec)
+//                .when()
                 .get("/api/users?page=2")
                 .then()
                 .statusCode(200)
@@ -76,8 +76,8 @@ public class ApiTest extends BaseTest {
     @Story("Get response")
     @Description("Get information about single user")
     public void testSingleUsers() {
-        Response response = given()
-                .when()
+        Response response = given(requestSpec,responseSpec)
+//                .when()
                 .get("/api/users/2")
                 .then()
                 .body("data.first_name", notNullValue())
@@ -96,9 +96,9 @@ public class ApiTest extends BaseTest {
     @Story("Get response")
     @Description("Get information about single user not found")
     public void testSingleUserNotFound() {
-        Response response = given()
-                .when().log().all()
-                .contentType(ContentType.JSON)
+        Response response = given(requestSpec,responseSpec)
+//                .when().log().all()
+//                .contentType(ContentType.JSON)
                 .get("/api/users/23")
                 .then().log().all()
                 .statusCode(404)
@@ -116,10 +116,10 @@ public class ApiTest extends BaseTest {
     public void testPostUser() {
         CreateSingleUserPojo postBody = new CreateSingleUserPojo("morpheus", "leader");
 
-        SingleUserPojo response = given()
-                .when()
-                .contentType(ContentType.JSON)
-                .body(postBody)
+        SingleUserPojo response = given(requestSpec.body(postBody),responseSpec)
+//                .when()
+//                .contentType(ContentType.JSON)
+//                .body(postBody)
                 .post("/api/users")
                 .then().log().all()
                 .body("name", notNullValue())
