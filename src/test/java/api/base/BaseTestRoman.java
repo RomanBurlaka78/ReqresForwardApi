@@ -10,7 +10,7 @@ import org.testng.annotations.BeforeMethod;
 
 import java.lang.reflect.Method;
 
-public abstract class BaseTest {
+public abstract class BaseTestRoman {
 
     public static Specifications specifications = new Specifications();
     public static RequestSpecification requestSpec;
@@ -26,11 +26,14 @@ public abstract class BaseTest {
         responseSpec = specifications.setupResponse();
 
     }
+    @BeforeClass
+    protected void addSpecToClass(){
+        specifications.installSpec();
+    }
 
     @BeforeMethod
     protected void beforeMethod(Method method) {
         ProjectUtils.logf("Запускается %s.%s", this.getClass().getName(), method.getName());
-        spec();
 
     }
 
