@@ -1,6 +1,7 @@
 package api.tests.br;
 
 import api.base.BaseTest;
+import api.base.BaseTestRoman;
 import api.base.ListenersUtils;
 import api.base.Specifications;
 import api.pojo.CreateSingleUserPojo;
@@ -28,7 +29,7 @@ import java.util.Map;
 @Listeners(ListenersUtils.class)
 @Epic("Api tests version Roman")
 @Owner("Roman Burlaka")
-public class ApiTest extends BaseTest {
+public class ApiTest extends BaseTestRoman {
 
     @Test(priority = 0)
     @Feature("Get Api")
