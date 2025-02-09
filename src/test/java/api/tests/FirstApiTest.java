@@ -32,6 +32,8 @@ public class FirstApiTest {
 
         JsonPath jsonPath = response.jsonPath();
 
+        specifications.specificationsNull();
+
         //Should be assertions
     }
 
