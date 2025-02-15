@@ -1,41 +1,18 @@
 package api.base;
 
-import io.qameta.allure.restassured.AllureRestAssured;
-import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
-import org.testng.ITestResult;
-import org.testng.annotations.AfterMethod;
+import api.listeners.TestListener;
+import api.specifications.ApiSpecifications;
+import io.restassured.RestAssured;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 
-import java.lang.reflect.Method;
+@Listeners(TestListener.class)
+public class BaseTest {
 
-public abstract class BaseTest {
-
-    public static Specifications specifications = new Specifications();
-    public static RequestSpecification requestSpec;
-    public static ResponseSpecification responseSpec;
-
-    public static void spec(){
-        requestSpec = specifications.setupRequest().filter(new AllureRestAssured());
-        responseSpec = specifications.setupResponse();
-    }
-
-    public static void setupSpec() {
-        requestSpec = specifications.setupRequest();
-        responseSpec = specifications.setupResponse();
-
-    }
-
-    @BeforeMethod
-    protected void beforeMethod(Method method) {
-        ProjectUtils.logf("Запускается %s.%s", this.getClass().getName(), method.getName());
-        spec();
-
-    }
-
-    @AfterMethod
-    protected void afterMethod(Method method, ITestResult testResult) {
-        ProjectUtils.logf("Время выполнения %.3f сек", (testResult.getEndMillis() - testResult.getStartMillis()) / 1000.0);
+    @BeforeClass
+    public void setUp() {
+        ApiSpecifications.installSpecification(ApiSpecifications.requestSpec());
+        // Включение логов для всех запросов (опционально)
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 }
