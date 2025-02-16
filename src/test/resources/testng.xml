@@ -1,22 +1,22 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Reqres API Test Suite">
+<suite name="Reqres API Test Suite" parallel="classes">
 
     <test name="Users API Tests">
         <classes>
             <class name="api.tests.UserTests"/>
         </classes>
     </test>
-    <test name="Resources API Tests">
+    <test name="Resources API Tests" parallel="tests" thread-count="2">
         <classes>
             <class name="api.tests.ResourceTests"/>
         </classes>
     </test>
-    <test name="Auth API Tests">
+    <test name="Auth API Tests" parallel="methods" thread-count="1">
         <classes>
-            <class name="api.tests.AuthTests"/>
+            <class name="api.tests.AuthTests" />
         </classes>
     </test>
-    <test name="Delayed API Tests">
+    <test name="Delayed API Tests" parallel="methods" thread-count="1">
         <classes>
             <class name="api.tests.DelayedResponseTest"/>
         </classes>
