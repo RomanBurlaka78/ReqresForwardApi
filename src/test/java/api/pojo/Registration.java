@@ -8,7 +8,7 @@ public class Registration {
     private String email;
     private String password;
 
-    public Registration (){}
+    public Registration(){}
 
     public Registration(String email, String password) {
         this.email = email;
