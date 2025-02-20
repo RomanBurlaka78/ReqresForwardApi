@@ -16,10 +16,9 @@ public class ApiClient {
 
     private ApiClient() {
         logger.info("Creating ApiClient instance");
-        requestSpec = RestAssured.given()
-                // Используем RequestSpecification, установленный в BaseTest
-                .spec(ApiSpecifications.requestSpec())
-                .contentType("application/json");
+        requestSpec = ApiSpecifications.requestSpec();
+
+        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
     public static ApiClient getInstance() {
@@ -40,18 +39,18 @@ public class ApiClient {
         return requestSpec.body(body).post(path);
     }
 
-    public Response put(String path, String body) {
-        logger.info("Executing PUT request to: " + path);
-        return requestSpec.body(body).put(path);
+    public Response put(String apiEndPoint, String body) {
+        logger.info("Executing PUT request to: " + apiEndPoint);
+        return requestSpec.body(body).put(apiEndPoint);
     }
 
-    public Response patch(String path, String body) {
-        logger.info("Executing PUT request to: " + path);
-        return requestSpec.body(body).patch(path);
+    public Response patch(String apiEndPoint, String body) {
+        logger.info("Executing PUT request to: " + apiEndPoint);
+        return requestSpec.body(body).patch(apiEndPoint);
     }
 
-    public Response delete(String path) {
-        logger.info("Executing DELETE request to: " + path);
-        return requestSpec.delete(path);
+    public Response delete(String apiEndPoint) {
+        logger.info("Executing DELETE request to: " + apiEndPoint);
+        return requestSpec.delete(apiEndPoint);
     }
 }

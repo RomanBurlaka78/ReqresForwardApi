@@ -9,10 +9,10 @@ import org.testng.annotations.Listeners;
 @Listeners(TestListener.class)
 public class BaseTest {
 
-    @BeforeClass
-    public void setUp() {
-        ApiSpecifications.installSpecification(ApiSpecifications.requestSpec());
-        // Включение логов для всех запросов (опционально)
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
+//    @BeforeClass
+//    public void setUp() {
+//        ApiSpecifications.installSpecification(ApiSpecifications.requestSpec());
+//        // Включение логов для всех запросов (опционально)
+//        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+//    }
 }

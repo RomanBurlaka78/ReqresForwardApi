@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 @Epic("Reqres API Tests")
 @Feature("Auth management")
 @Link("https://reqres.in/")
-public class AuthTests extends BaseTest {
+public class AuthTests {
     AuthSteps authSteps = new AuthSteps();
     TestData testData = new TestData();
 

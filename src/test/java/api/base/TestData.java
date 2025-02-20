@@ -2,8 +2,8 @@ package api.base;
 
 public class TestData {
 
-    protected  String email = "eve.holt@reqres.in";
-    protected   String password = "pistol";
+    protected String email = "eve.holt@reqres.in";
+    protected String password = "pistol";
     protected String emailLogin = "eve.holt@reqres.in";
     protected String passwordLogin = "cityslicka";
 

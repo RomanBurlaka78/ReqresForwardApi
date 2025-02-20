@@ -7,7 +7,9 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 
 public class AuthSteps {
+
     private ApiClient apiClient = ApiClient.getInstance();
+
     @Step("Create register successful: {email, password}")
     public Response getRegisterSuccessful(String email, String password) {
         String body = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password);
