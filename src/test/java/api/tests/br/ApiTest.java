@@ -60,14 +60,21 @@ public class ApiTest extends BaseTestRoman {
     @Story("Get response")
     @Description("Get list of users with deserialization Pojo class")
     public void testGetListUserPojo() {
-        List<DataListUsers> itemList = given()
-                .when()
-                .get("/api/users?page=2")
-                .then()
-                .statusCode(200)
-                .extract().body().jsonPath().getList("data", DataListUsers.class);
+        Response response = getListUsers(2);
 
+        List<DataListUsers> itemList = response.jsonPath().getList("data", DataListUsers.class);
+
+        Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertEquals(itemList.get(0).id, 7);
+    }
+    @Step("")
+    public Response getListUsers(int page) {
+        return given()
+                .when()
+                .get("/api/users?page={page}",page)
+                .then()
+                .extract().response();
+
     }
 
 
