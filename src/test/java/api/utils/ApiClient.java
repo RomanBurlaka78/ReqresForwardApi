@@ -23,20 +23,19 @@ public class ApiClient {
 
     public static ApiClient getInstance() {
         if (instance == null) {
-            logger.info("Initializing new ApiClient instance");
             instance = new ApiClient();
         }
         return instance;
     }
 
-    public Response get(String path) {
-        logger.info("Executing GET request to: " + path);
-        return requestSpec.get(path);
+    public Response get(String apiEndPoint) {
+        logger.info("Executing GET request to: " + apiEndPoint);
+        return requestSpec.get(apiEndPoint);
     }
 
-    public Response post(String path, String body) {
-        logger.info("Executing POST request to: " + path);
-        return requestSpec.body(body).post(path);
+    public Response post(String apiEndPoint, String body) {
+        logger.info("Executing POST request to: " + apiEndPoint);
+        return requestSpec.body(body).post(apiEndPoint);
     }
 
     public Response put(String apiEndPoint, String body) {

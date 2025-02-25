@@ -2,10 +2,11 @@ package api.base;
 
 public class TestData {
 
-    protected String email = "eve.holt@reqres.in";
-    protected String password = "pistol";
-    protected String emailLogin = "eve.holt@reqres.in";
-    protected String passwordLogin = "cityslicka";
+    private String email = "eve.holt@reqres.in";
+    private String password = "pistol";
+    private String emailLogin = "eve.holt@reqres.in";
+    private String passwordLogin = "cityslicka";
+
 
 
     public String getEmail() {
@@ -23,4 +24,6 @@ public class TestData {
     public String getPasswordLogin() {
         return passwordLogin;
     }
+
+
 }

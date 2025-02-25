@@ -6,10 +6,13 @@ import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
 
-public class DelayedSteps {
+public class DelayedSteps extends DataManager{
+
     private ApiClient apiClient = ApiClient.getInstance();
+
     @Step("Get response : {delay}")
-    public Response getDelayedResponse(int delay) {
-        return apiClient.get("users?delay=" + delay);
+    public Response getDelayedResponse(String apiEndPoint, int delay) {
+        return apiClient.get(generateBodyFromStringAndInt(apiEndPoint, delay));
+
     }
 }

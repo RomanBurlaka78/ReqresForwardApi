@@ -21,20 +21,4 @@ public class ApiSpecifications {
         return requestSpecification;
     }
 
-//    public static ResponseSpecification responseSpec() {
-//        return  new ResponseSpecBuilder()
-//                .log(ALL)
-//                .build();
-//    }
-//
-//    public static ResponseSpecification responseSpec(int statusCode) {
-//        return expect()
-//                .statusCode(statusCode)
-//                .log().all();
-//    }
-//
-//    public static void installSpecification(RequestSpecification requestSpec) {
-//        RestAssured.requestSpecification = requestSpec();
-//        RestAssured.responseSpecification = responseSpec();
-//    }
 }

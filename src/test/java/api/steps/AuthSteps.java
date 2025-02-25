@@ -6,32 +6,28 @@ import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
 
-public class AuthSteps {
+public class AuthSteps extends DataManager{
 
     private ApiClient apiClient = ApiClient.getInstance();
 
     @Step("Create register successful: {email, password}")
-    public Response getRegisterSuccessful(String email, String password) {
-        String body = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password);
-        return apiClient.post("/register", body);
+    public Response getRegisterSuccessful(String apiEndPoint, String email, String password) {
+        return apiClient.post(apiEndPoint, generateBodyFromEmailAndPassword(email,password));
     }
 
     @Step("Create register unsuccessful: {email}")
-    public Response getRegisterUnSuccessful(String email) {
-        String body = String.format("{\"email\": \"%s\"}", email);
-        return apiClient.post("/register", body);
+    public Response getRegisterUnSuccessful(String apiEndPoint, String email) {
+        return apiClient.post(apiEndPoint, generateBodyFromEmail(email));
     }
 
     @Step("Login successful: {email, password}")
-    public Response postLoginSuccessful(String email, String password) {
-        String body = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password);
-        return apiClient.post("/login", body);
+    public Response postLoginSuccessful(String apiEndPoint, String email, String password) {
+        return apiClient.post(apiEndPoint, generateBodyFromEmailAndPassword(email,password));
     }
 
     @Step("Login successful: {email, password}")
-    public Response postLoginUnSuccessful(String email) {
-        String body = String.format("{\"email\": \"%s\"}", email);
-        return apiClient.post("/login", body);
+    public Response postLoginUnSuccessful(String apiEndPoint, String email) {
+        return apiClient.post(apiEndPoint, generateBodyFromEmail(email));
     }
 
 

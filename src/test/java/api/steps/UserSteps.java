@@ -7,39 +7,33 @@ import io.restassured.response.Response;
 
 
 
-public class UserSteps {
+public class UserSteps extends DataManager{
+
     private ApiClient apiClient = ApiClient.getInstance();
 
     @Step("Get list users by : {page}")
-    public Response getListUsers(int page) {
-        return apiClient.get("/users?page =" + page);
+    public Response getListUsers(String apiEndPoint, int page) {
+        return apiClient.get(generateBodyFromStringAndInt(apiEndPoint, page));
     }
 
     @Step("Get user by ID: {userId}")
-    public Response getUserById(int userId) {
-        return apiClient.get("/users/" + userId);
+    public Response getUserById(String apiEndPoint, int userId) {
+        return apiClient.get(generateBodyFromStringAndInt(apiEndPoint, userId));
     }
 
     @Step("Create user with name: {name} and job: {job}")
-    public Response createUser(String name, String job) {
-        String body = String.format("{\"name\": \"%s\", \"job\": \"%s\"}", name, job);
-        return apiClient.post("/users", body);
+    public Response createUser(String apiEndPoint, String name, String job) {
+        return apiClient.post(apiEndPoint, generateBodyFromNameAndJob( name, job));
     }
 
     @Step("Update user with ID: {userId}, name: {name} and job: {job}")
-    public Response updateUser(int userId, String name, String job) {
-        String body = String.format("{\"name\": \"%s\", \"job\": \"%s\"}", name, job);
-        return apiClient.put("/users/" + userId, body);
-    }
-
-    @Step("Update user with ID: {userId}, name: {name} and job: {job}")
-    public Response updatePatchUser(int userId, String name, String job) {
-        String body = String.format("{\"name\": \"%s\", \"job\": \"%s\"}", name, job);
-        return apiClient.patch("/users/" + userId, body);
-    }
+        public Response updateUser(String apiEndPoint, int userId, String name, String job) {
+            String generated_endpoint = generateBodyFromStringAndInt(apiEndPoint, userId);
+            return apiClient.put(generated_endpoint, generateBodyFromNameAndJob(name, job));
+        }
 
     @Step("Delete user by ID: {userId}")
-    public Response deleteUser(int userId) {
-        return apiClient.delete("/users/" + userId);
+    public Response deleteUser(String apiEndPoint, int userId) {
+        return apiClient.delete(generateBodyFromStringAndInt(apiEndPoint, userId));
     }
 }

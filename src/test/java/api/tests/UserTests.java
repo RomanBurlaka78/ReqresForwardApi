@@ -1,7 +1,7 @@
 package api.tests;
 
 
-import api.base.BaseTest;
+import api.base.ApiEndPoints;
 import api.pojo.UserPojo;
 import api.steps.UserSteps;
 import com.beust.ah.A;
@@ -13,23 +13,27 @@ import org.testng.annotations.Test;
 @Epic("Reqres API Tests")
 @Feature("User Management")
 @Link("https://reqres.in/")
-public class UserTests extends BaseTest {
+public class UserTests {
 
     private UserSteps userSteps = new UserSteps();
+    private ApiEndPoints apiEndPoints = new ApiEndPoints();
+
     @Test
     @Description("Test to verify getting a list of users")
     @Story("Get User")
     public void testGetListUsers() {
-        Response response = userSteps.getListUsers(2);
+        Response response = userSteps.getListUsers(apiEndPoints.getUSERS_PAGE(), 2);
+
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertTrue(!response.jsonPath().getString("data").isEmpty());
     }
+
     @Test
     @Description("Test to verify getting a user by ID")
     @Story("Get User")
     public void testGetUserById() {
-        int userId = 2;
-        Response response = userSteps.getUserById(userId);
+
+        Response response = userSteps.getUserById(apiEndPoints.getUSERS_WITH_SLASH(), 2);
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertEquals(response.jsonPath().getString("data.email"), "janet.weaver@reqres.in");
     }
@@ -38,8 +42,8 @@ public class UserTests extends BaseTest {
     @Description("Test to verify getting a user by ID")
     @Story("Get User")
     public void testGetUserNotFound() {
-        int userId = 23;
-        Response response = userSteps.getUserById(userId);
+
+        Response response = userSteps.getUserById(apiEndPoints.getUSERS_WITH_SLASH(), 23);
         Assert.assertEquals(response.getStatusCode(), 404);
     }
 
@@ -47,7 +51,8 @@ public class UserTests extends BaseTest {
     @Description("Test to verify creating a new user")
     @Story("Create User")
     public void testCreateUser() {
-        Response response = userSteps.createUser("morpheus", "leader");
+
+        Response response = userSteps.createUser(apiEndPoints.getUSERS(), "morpheus", "leader");
         Assert.assertEquals(response.getStatusCode(), 201);
         Assert.assertEquals(response.jsonPath().getString("name"), "morpheus");
         Assert.assertEquals(response.jsonPath().getString("job"), "leader");
@@ -56,8 +61,9 @@ public class UserTests extends BaseTest {
     @Test
     @Description("Test to verify updating a user")
     @Story("Update User")
-    public void testPutUpdateUser() {
-        Response response = userSteps.updateUser(2, "morpheus", "zion resident");
+    public void testUpdateUser() {
+
+        Response response = userSteps.updateUser(apiEndPoints.getAPI_USERS(), 2, "morpheus", "zion resident");
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertEquals(response.jsonPath().getString("name"), "morpheus");
         Assert.assertEquals(response.jsonPath().getString("job"), "zion resident");
@@ -67,7 +73,8 @@ public class UserTests extends BaseTest {
     @Description("Test to verify updating a user")
     @Story("Update User")
     public void testPatchUpdateUser() {
-        Response response = userSteps.updateUser(2, "morpheus", "zion resident");
+
+        Response response = userSteps.updateUser(apiEndPoints.getUSERS_WITH_SLASH(), 2, "morpheus", "zion resident");
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertEquals(response.jsonPath().getString("name"), "morpheus");
         Assert.assertEquals(response.jsonPath().getString("job"), "zion resident");
@@ -77,7 +84,8 @@ public class UserTests extends BaseTest {
     @Description("Test to verify deleting a user")
     @Story("Delete User")
     public void testDeleteUser() {
-        Response response = userSteps.deleteUser(2);
+
+        Response response = userSteps.deleteUser(apiEndPoints.getUSERS_WITH_SLASH(), 2);
         Assert.assertEquals(response.getStatusCode(), 204);
     }
 //    """Pojo Tests"""
@@ -86,8 +94,8 @@ public class UserTests extends BaseTest {
     @Description("Test to verify getting a user by ID")
     @Story("Get User")
     public void testGetUserByIdPojo() {
-        int userId = 2;
-        Response response = userSteps.getUserById(userId);
+
+        Response response = userSteps.getUserById(apiEndPoints.getUSERS_WITH_SLASH(), 2);
         Assert.assertEquals(response.getStatusCode(), 200);
 
 

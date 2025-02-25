@@ -1,6 +1,6 @@
 package api.tests;
 
-import api.base.BaseTest;
+import api.base.ApiEndPoints;
 import api.steps.DelayedSteps;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
@@ -12,14 +12,16 @@ import org.testng.annotations.Test;
 @Link("https://reqres.in/")
 
 
-public class DelayedResponseTest extends BaseTest {
+public class DelayedResponseTest {
     private DelayedSteps delayedSteps = new DelayedSteps();
+    private ApiEndPoints apiEndPoints = new ApiEndPoints();
+
 
     @Test
     @Description
     @Story("Get delayed")
     public void testGetDelayedResponse() {
-        Response delayedResponse = delayedSteps.getDelayedResponse(3);
+        Response delayedResponse = delayedSteps.getDelayedResponse(apiEndPoints.getUSER_DELAY(), 3);
         Assert.assertEquals(delayedResponse.getStatusCode(), 200);
         Assert.assertEquals(delayedResponse.jsonPath().getString("total"), "12");
     }
