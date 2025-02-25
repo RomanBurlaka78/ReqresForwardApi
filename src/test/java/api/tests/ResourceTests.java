@@ -12,7 +12,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 @Epic("Reqres API Tests")
-@Feature("Resource Management")
+@Feature("Resource management tests")
 public class ResourceTests {
 
     private ResourceSteps resourceSteps = new ResourceSteps();

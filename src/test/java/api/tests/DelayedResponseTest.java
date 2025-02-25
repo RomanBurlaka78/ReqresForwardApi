@@ -8,10 +8,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Epic("Reqres API Tests")
-@Feature("Delayed response")
+@Feature("Delayed response tests")
 @Link("https://reqres.in/")
-
-
 public class DelayedResponseTest {
     private DelayedSteps delayedSteps = new DelayedSteps();
     private ApiEndPoints apiEndPoints = new ApiEndPoints();

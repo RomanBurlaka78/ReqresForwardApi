@@ -9,7 +9,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Epic("Reqres API Tests")
-@Feature("Auth management")
+@Feature("Auth tests")
 @Link("https://reqres.in/")
 public class AuthTests {
 
@@ -41,7 +41,7 @@ public class AuthTests {
     }
 
     @Test
-    @Description("Test to verify login unsuccessful")
+    @Description("Test to verify user`s successful login")
     @Story("Auth User login")
     public void testLoginSuccessful() {
         Response response = authSteps.postLoginSuccessful(apiEndPoints.getLOGIN_SUCCESSFUL(), testData.getEmailLogin(), testData.getPasswordLogin());

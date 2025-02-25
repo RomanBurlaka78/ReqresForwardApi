@@ -11,7 +11,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Epic("Reqres API Tests")
-@Feature("User Management")
+@Feature("User management tests")
 @Link("https://reqres.in/")
 public class UserTests {
 
