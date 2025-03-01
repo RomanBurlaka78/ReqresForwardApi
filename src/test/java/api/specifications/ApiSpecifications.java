@@ -13,12 +13,11 @@ import static io.restassured.filter.log.LogDetail.ALL;
 public class ApiSpecifications {
 
     public static RequestSpecification requestSpec() {
-        RequestSpecification requestSpecification = RestAssured.given()
+        return RestAssured.given()
                 .baseUri("https://reqres.in/api")
                 .filter(new AllureRestAssured())
                 .contentType("application/json");
-                requestSpecification.log();
-        return requestSpecification;
+                //requestSpecification.log();
     }
 
 }
