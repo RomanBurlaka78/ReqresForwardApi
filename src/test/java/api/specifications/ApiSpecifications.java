@@ -3,21 +3,19 @@ package api.specifications;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
-import static io.restassured.RestAssured.expect;
-import static io.restassured.RestAssured.given;
-import static io.restassured.filter.log.LogDetail.ALL;
+import org.testng.annotations.BeforeSuite;
+
+import static io.restassured.RestAssured.*;
 
 public class ApiSpecifications {
 
-    public static RequestSpecification requestSpec() {
-        return RestAssured.given()
-                .baseUri("https://reqres.in/api")
-                .filter(new AllureRestAssured())
-                .contentType("application/json");
-                //requestSpecification.log();
+    public static void requestSpec() {
+        RequestSpecification requestSpecification1 = new RequestSpecBuilder()
+                .setBaseUri("https://reqres.in/api")
+                .addFilter(new AllureRestAssured())
+                .build().contentType("application/json");
+        RestAssured.requestSpecification=requestSpecification1;
     }
 
 }
