@@ -6,11 +6,13 @@ import api.steps.AuthSteps;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Epic("Reqres API Tests")
 @Feature("Auth tests")
 @Link("https://reqres.in/")
+@Listeners(api.listeners.TestListener.class)
 public class AuthTests {
 
     private AuthSteps authSteps = new AuthSteps();
