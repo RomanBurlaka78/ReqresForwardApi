@@ -27,6 +27,7 @@ public class FilterExperement implements Filter {
         logger.info("Request headers - {}", requestSpec.getHeaders());
         logger.info("Base Path - {}", requestSpec.getBasePath());
         logger.info("HTTP method - {}", requestSpec.getMethod());
+        logger.info("HTTP body " + requestSpec.getBody());
     }
 
     public void logResponse(Response response){

@@ -13,11 +13,10 @@ import static io.restassured.RestAssured.given;
 public class ApiClient {
 
     private static ApiClient instance;
-    //private static final Logger logger = LogManager.getLogger(ApiClient.class);
 
-//    static {
-//        RestAssured.filters(new FilterExperement());
-//    }
+    static {
+        RestAssured.filters(new FilterExperement());
+    }
 
     private ApiClient() {
         ApiSpecifications.requestSpec();
@@ -32,29 +31,22 @@ public class ApiClient {
     }
 
     public Response get(String apiEndPoint) {
-        //logger.info("Executing GET request to: " + apiEndPoint);
         return given().get(apiEndPoint);
     }
 
     public Response post(String apiEndPoint, String body) {
-        //logger.info("Executing POST request to: " + apiEndPoint);
         return given().body(body).post(apiEndPoint);
     }
 
     public Response put(String apiEndPoint, String body) {
-        //logger.info("Executing PUT request to: " + apiEndPoint);
         return given().body(body).put(apiEndPoint);
     }
 
     public Response patch(String apiEndPoint, String body) {
-        //logger.info("Executing PUT request to: " + apiEndPoint);
-
         return given().body(body).patch(apiEndPoint);
     }
 
     public Response delete(String apiEndPoint) {
-        //logger.info("Executing DELETE request to: " + apiEndPoint);
-
         return given().delete(apiEndPoint);
     }
 }

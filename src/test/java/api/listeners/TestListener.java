@@ -11,7 +11,6 @@ import org.testng.ITestResult;
 public class TestListener implements ITestListener {
 
     private static final Logger logger = LogManager.getLogger(TestListener.class);
-    FilterExperement filterExperement = new FilterExperement();
 
     @Override
     public void onTestStart(ITestResult result) {
@@ -23,14 +22,13 @@ public class TestListener implements ITestListener {
     public void onTestSuccess(ITestResult result) {
         logger.info("Passed successfully");
         logger.info("*************************************************************************");
-        Allure.addAttachment("Test Passed", "text/plain", "Test passed successfully!");
+        Allure.attachment("Test Passed", "Test passed successfully!");
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-        logger.error("Test failed: {}", result.getName());
-        logger.error(filterExperement.filter(RestAssured.requestSpecification, ));
-        Allure.addAttachment("Test Failed", "text/plain", "Test failed with exception: " + result.getThrowable().getMessage());
+        logger.error("Test failed");
+        Allure.attachment("Test Failed","Test failed with exception: " + result.getThrowable().getMessage());
     }
 
     @Override

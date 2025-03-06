@@ -5,11 +5,13 @@ import api.steps.DelayedSteps;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Epic("Reqres API Tests")
 @Feature("Delayed response tests")
 @Link("https://reqres.in/")
+@Listeners(api.listeners.TestListener.class)
 public class DelayedResponseTest {
     private DelayedSteps delayedSteps = new DelayedSteps();
     private ApiEndPoints apiEndPoints = new ApiEndPoints();

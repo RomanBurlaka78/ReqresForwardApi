@@ -4,15 +4,16 @@ package api.tests;
 import api.base.ApiEndPoints;
 import api.pojo.UserPojo;
 import api.steps.UserSteps;
-import com.beust.ah.A;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Epic("Reqres API Tests")
 @Feature("User management tests")
 @Link("https://reqres.in/")
+@Listeners(api.listeners.TestListener.class)
 public class UserTests {
 
     private UserSteps userSteps = new UserSteps();

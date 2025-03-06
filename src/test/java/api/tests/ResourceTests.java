@@ -9,10 +9,12 @@ import io.qameta.allure.Story;
 import io.restassured.response.Response;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Epic("Reqres API Tests")
 @Feature("Resource management tests")
+@Listeners(api.listeners.TestListener.class)
 public class ResourceTests {
 
     private ResourceSteps resourceSteps = new ResourceSteps();

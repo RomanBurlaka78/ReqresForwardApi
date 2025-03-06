@@ -29,6 +29,7 @@ public class AuthTests {
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertEquals(response.body().asString(), """
                 {"id":4,"token":"QpwL5tke4Pnpja7X4"}""");
+        Allure.attachment("attachment", "attachment from testRegisterSuccessful");
     }
 
     @Test

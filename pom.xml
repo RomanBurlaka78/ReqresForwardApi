@@ -21,7 +21,7 @@
         <dependency>
             <groupId>org.testng</groupId>                        <!-- TestNG 7.10.2 -->
             <artifactId>testng</artifactId>
-            <version>7.10.2</version>        <!-- скриншоты добовляются в алюр в версии 7.4.0-->
+            <version>7.4.0</version>        <!-- скриншоты добовляются в алюр в версии 7.4.0-->
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -112,9 +112,9 @@
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
-<!--                    <suiteXmlFiles>-->
-<!--                        SingleTestRun.xml-->
-<!--                    </suiteXmlFiles>-->
+                    <suiteXmlFiles>
+                        ${filename}.xml
+                    </suiteXmlFiles>
                 </configuration>
             </plugin>
 
