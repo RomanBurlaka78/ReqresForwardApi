@@ -2,7 +2,7 @@ package api.tests;
 
 import api.base.ApiEndPoints;
 import api.base.TestData;
-import api.steps.AuthSteps;
+import api.services.AuthService;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.testng.Assert;
@@ -15,28 +15,25 @@ import org.testng.annotations.Test;
 @Listeners(api.listeners.TestListener.class)
 public class AuthTests {
 
-    private AuthSteps authSteps = new AuthSteps();
+    private AuthService authService = new AuthService();
     private TestData testData = new TestData();
-    private ApiEndPoints apiEndPoints = new ApiEndPoints();
-
 
     @Test
     @Description("Test to verify register successful")
     @Story("Auth User register")
     public void testRegisterSuccessful() {
-        Response response = authSteps.getRegisterSuccessful(apiEndPoints.getREGISTER_END_POINT(), testData.getEmail(), testData.getPassword());
+        Response response = authService.getRegisterSuccessful(ApiEndPoints.REGISTER_END_POINT, testData.getEmail(), testData.getPassword());
 
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertEquals(response.body().asString(), """
                 {"id":4,"token":"QpwL5tke4Pnpja7X4"}""");
-        Allure.attachment("attachment", "attachment from testRegisterSuccessful");
     }
 
     @Test
     @Description("Test to verify register unsuccessful")
     @Story("Auth User register")
     public void testRegisterUnSuccessful() {
-        Response response = authSteps.getRegisterUnSuccessful(apiEndPoints.getREGISTER_END_POINT(), testData.getEmail());
+        Response response = authService.getRegisterUnSuccessful(ApiEndPoints.REGISTER_END_POINT, testData.getEmail());
         Assert.assertEquals(response.getStatusCode(), 400);
 
         Assert.assertEquals(response.body().asString(), """
@@ -47,7 +44,7 @@ public class AuthTests {
     @Description("Test to verify user`s successful login")
     @Story("Auth User login")
     public void testLoginSuccessful() {
-        Response response = authSteps.postLoginSuccessful(apiEndPoints.getLOGIN_SUCCESSFUL(), testData.getEmailLogin(), testData.getPasswordLogin());
+        Response response = authService.postLoginSuccessful(ApiEndPoints.LOGIN_SUCCESSFUL, testData.getEmailLogin(), testData.getPasswordLogin());
         Assert.assertEquals(response.getStatusCode(), 200);
 
         Assert.assertEquals(response.body().asString(), """
@@ -59,7 +56,7 @@ public class AuthTests {
     @Description("Test to verify login unsuccessful")
     @Story("Auth User login")
     public void testLoginUnSuccessful() {
-        Response response = authSteps.postLoginUnSuccessful(apiEndPoints.getLOGIN_SUCCESSFUL(), testData.getEmailLogin());
+        Response response = authService.postLoginUnSuccessful(ApiEndPoints.LOGIN_SUCCESSFUL, testData.getEmailLogin());
         Assert.assertEquals(response.getStatusCode(), 400);
 
         Assert.assertEquals(response.body().asString(), """

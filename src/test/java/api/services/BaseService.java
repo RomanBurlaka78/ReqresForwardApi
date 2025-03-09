@@ -1,34 +1,33 @@
-package api.utils;
+package api.services;
 
 
-import api.filters.FilterExperement;
+import api.restAssuredFilters.FilterExperement;
 import api.specifications.ApiSpecifications;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import static io.restassured.RestAssured.given;
 
-public class ApiClient {
+public abstract class BaseService {
 
-    private static ApiClient instance;
 
     static {
-        RestAssured.filters(new FilterExperement());
-    }
-
-    private ApiClient() {
         ApiSpecifications.requestSpec();
+        RestAssured.filters(new FilterExperement());
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-    public static ApiClient getInstance() {
-        if (instance == null) {
-            instance = new ApiClient();
-        }
-        return instance;
-    }
+//    private BaseService() {
+//        ApiSpecifications.requestSpec();
+//        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+//    }
+
+//    public static BaseService getInstance() {
+//        if (instance == null) {
+//            instance = new BaseService();
+//        }
+//        return instance;
+//    }
 
     public Response get(String apiEndPoint) {
         return given().get(apiEndPoint);

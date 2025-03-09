@@ -3,7 +3,8 @@ package api.tests;
 
 import api.base.ApiEndPoints;
 import api.pojo.UserPojo;
-import api.steps.UserSteps;
+import api.services.UserService;
+import api.servicesData.UserTestData;
 import io.qameta.allure.*;
 import io.restassured.response.Response;
 import org.testng.Assert;
@@ -16,14 +17,13 @@ import org.testng.annotations.Test;
 @Listeners(api.listeners.TestListener.class)
 public class UserTests {
 
-    private UserSteps userSteps = new UserSteps();
-    private ApiEndPoints apiEndPoints = new ApiEndPoints();
+    private UserService userService = new UserService();
 
     @Test
     @Description("Test to verify getting a list of users")
     @Story("Get User")
     public void testGetListUsers() {
-        Response response = userSteps.getListUsers(apiEndPoints.getUSERS_PAGE(), 2);
+        Response response = userService.getListUsers(ApiEndPoints.USERS_PAGE, UserTestData.pageNumber);
 
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertTrue(!response.jsonPath().getString("data").isEmpty());
@@ -34,7 +34,7 @@ public class UserTests {
     @Story("Get User")
     public void testGetUserById() {
 
-        Response response = userSteps.getUserById(apiEndPoints.getUSERS_WITH_SLASH(), 2);
+        Response response = userService.getUserById(ApiEndPoints.USERS_WITH_SLASH, UserTestData.existedUsersId);
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertEquals(response.jsonPath().getString("data.email"), "janet.weaver@reqres.in");
     }
@@ -44,7 +44,7 @@ public class UserTests {
     @Story("Get User")
     public void testGetUserNotFound() {
 
-        Response response = userSteps.getUserById(apiEndPoints.getUSERS_WITH_SLASH(), 23);
+        Response response = userService.getUserById(ApiEndPoints.USERS_WITH_SLASH, UserTestData.notExistedUsersId);
         Assert.assertEquals(response.getStatusCode(), 404);
     }
 
@@ -53,7 +53,7 @@ public class UserTests {
     @Story("Create User")
     public void testCreateUser() {
 
-        Response response = userSteps.createUser(apiEndPoints.getUSERS(), "morpheus", "leader");
+        Response response = userService.createUser(ApiEndPoints.USERS, "morpheus", "leader");
         Assert.assertEquals(response.getStatusCode(), 201);
         Assert.assertEquals(response.jsonPath().getString("name"), "morpheus");
         Assert.assertEquals(response.jsonPath().getString("job"), "leader");
@@ -64,7 +64,7 @@ public class UserTests {
     @Story("Update User")
     public void testUpdateUser() {
 
-        Response response = userSteps.updateUser(apiEndPoints.getAPI_USERS(), 2, "morpheus", "zion resident");
+        Response response = userService.updateUser(ApiEndPoints.API_USERS, 2, "morpheus", "zion resident");
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertEquals(response.jsonPath().getString("name"), "morpheus");
         Assert.assertEquals(response.jsonPath().getString("job"), "zion resident");
@@ -75,7 +75,7 @@ public class UserTests {
     @Story("Update User")
     public void testPatchUpdateUser() {
 
-        Response response = userSteps.updateUser(apiEndPoints.getUSERS_WITH_SLASH(), 2, "morpheus", "zion resident");
+        Response response = userService.updateUser(ApiEndPoints.USERS_WITH_SLASH, 2, "morpheus", "zion resident");
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertEquals(response.jsonPath().getString("name"), "morpheus");
         Assert.assertEquals(response.jsonPath().getString("job"), "zion resident");
@@ -86,7 +86,7 @@ public class UserTests {
     @Story("Delete User")
     public void testDeleteUser() {
 
-        Response response = userSteps.deleteUser(apiEndPoints.getUSERS_WITH_SLASH(), 2);
+        Response response = userService.deleteUser(ApiEndPoints.USERS_WITH_SLASH, 2);
         Assert.assertEquals(response.getStatusCode(), 204);
     }
 //    """Pojo Tests"""
@@ -96,7 +96,7 @@ public class UserTests {
     @Story("Get User")
     public void testGetUserByIdPojo() {
 
-        Response response = userSteps.getUserById(apiEndPoints.getUSERS_WITH_SLASH(), 2);
+        Response response = userService.getUserById(ApiEndPoints.USERS_WITH_SLASH, 2);
         Assert.assertEquals(response.getStatusCode(), 200);
 
 

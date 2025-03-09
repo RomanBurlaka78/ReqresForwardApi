@@ -1,0 +1,9 @@
+The one of the idea for test failure was creating attachment for Allure report, that would say the name of the test,
+the description and the error message. For the tool of that realization I choose the TestListner concept of TestNG. But
+because of Allure addAtachment() method did not work properly and failed to add attachment in case of test failure.
+I implemented TestLifecycleListener interface of the Allure API with beforeTestStop() method, but I realize that there
+nothing that I really need or want to attach. Since I am using Allure filter I already have in the report attachments of HTTP
+request/response, and allure by itself add error message for failed tests, and more over because of annotations used in a test
+I have dissent description, and with Allure steps that I do use in a server class level I`ve got the arguments presented in a
+report. So I declined the implementaion of TestLifecycleListener interface since I have nothing to add. :-)
+But the good thing is that I practice for implementation of 2 interfaces in a one class (TestListener).

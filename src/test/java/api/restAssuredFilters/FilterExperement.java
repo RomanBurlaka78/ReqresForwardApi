@@ -1,4 +1,4 @@
-package api.filters;
+package api.restAssuredFilters;
 
 import io.restassured.filter.Filter;
 import io.restassured.filter.FilterContext;
@@ -22,17 +22,22 @@ public class FilterExperement implements Filter {
     }
 
     public void logRequest(FilterableRequestSpecification requestSpec){
+        logger.always();
         logger.info("Request credentials:");
         logger.info("Base URL - {}", requestSpec.getBaseUri());
-        logger.info("Request headers - {}", requestSpec.getHeaders());
+        logger.info("Request ContentType - {}", requestSpec.getContentType());
         logger.info("Base Path - {}", requestSpec.getBasePath());
+        logger.info("UserDefinedPath - {}", requestSpec.getUserDefinedPath());
         logger.info("HTTP method - {}", requestSpec.getMethod());
         logger.info("HTTP body " + requestSpec.getBody());
     }
 
     public void logResponse(Response response){
+        logger.info("");
         logger.info("Response credentials:");
         logger.info("response statusCode - " + response.getStatusCode());
         logger.info("response body - " + response.getBody());
+
     }
+
 }

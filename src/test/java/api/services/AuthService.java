@@ -1,33 +1,34 @@
-package api.steps;
+package api.services;
 
-import api.utils.ApiClient;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
 
-public class AuthSteps extends DataManager{
-
-    private ApiClient apiClient = ApiClient.getInstance();
+public class AuthService extends BaseService {
 
     @Step("Create register successful: {email, password}")
     public Response getRegisterSuccessful(String apiEndPoint, String email, String password) {
-        return apiClient.post(apiEndPoint, generateBodyFromEmailAndPassword(email,password));
+        String body = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password);
+        return post(apiEndPoint, body);
     }
 
     @Step("Create register unsuccessful: {email}")
     public Response getRegisterUnSuccessful(String apiEndPoint, String email) {
-        return apiClient.post(apiEndPoint, generateBodyFromEmail(email));
+        String body = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email,"");
+        return post(apiEndPoint, body);
     }
 
     @Step("Login successful: {email, password}")
     public Response postLoginSuccessful(String apiEndPoint, String email, String password) {
-        return apiClient.post(apiEndPoint, generateBodyFromEmailAndPassword(email,password));
+        String body = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email, password);
+        return post(apiEndPoint, body);
     }
 
     @Step("Login successful: {email, password}")
     public Response postLoginUnSuccessful(String apiEndPoint, String email) {
-        return apiClient.post(apiEndPoint, generateBodyFromEmail(email));
+        String body = String.format("{\"email\": \"%s\", \"password\": \"%s\"}", email,"");
+        return post(apiEndPoint, body);
     }
 
 

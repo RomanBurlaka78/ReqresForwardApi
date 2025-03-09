@@ -1,7 +1,7 @@
 package api.tests;
 
 import api.base.ApiEndPoints;
-import api.steps.ResourceSteps;
+import api.services.ResourceService;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -17,9 +17,7 @@ import org.testng.annotations.Test;
 @Listeners(api.listeners.TestListener.class)
 public class ResourceTests {
 
-    private ResourceSteps resourceSteps = new ResourceSteps();
-    private ApiEndPoints apiEndPoints = new ApiEndPoints();
-
+    private ResourceService resourceService = new ResourceService();
 
     @DataProvider
     public static Object[] dataResourceId() {
@@ -35,7 +33,7 @@ public class ResourceTests {
     @Description("Test to verify a resource by ID")
     @Story("Get Resource")
     public void testGetSingleResourceById() {
-        Response response = resourceSteps.getResourceById(apiEndPoints.getUNKNOWN(), 2);
+        Response response = resourceService.getResourceById(ApiEndPoints.UNKNOWN, 2);
 
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertEquals(response.jsonPath().getString("data.name"), "fuchsia rose");
@@ -45,7 +43,7 @@ public class ResourceTests {
     @Description("Test to verify getting a resource by ID")
     @Story("Get Resource")
     public void testGetListResource() {
-        Response response = resourceSteps.getListResource(apiEndPoints.getUNKNOWN());
+        Response response = resourceService.getListResource(ApiEndPoints.UNKNOWN);
         Assert.assertEquals(response.getStatusCode(), 200);
 
 
@@ -55,7 +53,7 @@ public class ResourceTests {
     @Description("Test to verify getting a resource by ID")
     @Story("Get Resource")
     public void testGetSingleResourceNotFound() {
-        Response response = resourceSteps.getResourceById(apiEndPoints.getUNKNOWN(),23);
+        Response response = resourceService.getResourceById(ApiEndPoints.UNKNOWN,23);
         Assert.assertEquals(response.getStatusCode(), 404);
         Assert.assertEquals(response.body().asString(), "{}");
     }
@@ -64,7 +62,7 @@ public class ResourceTests {
     @Description("Test to verify getting a resource by ID")
     @Story("Get Resource")
     public void testGetSingleResourceNotFoundExtended(int dataResource) {
-        Response response = resourceSteps.getResourceById(apiEndPoints.getUNKNOWN(), dataResource);
+        Response response = resourceService.getResourceById(ApiEndPoints.UNKNOWN, dataResource);
         Assert.assertEquals(response.getStatusCode(), 404);
         Assert.assertEquals(response.body().asString(), "{}");
     }
