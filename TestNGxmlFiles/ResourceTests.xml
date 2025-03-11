@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Run single suit  tests" configfailurepolicy="continue">
+
+    <test name="Single test suit ">
+        <classes>
+            <class name="tests.ResourcesTests"></class>
+        </classes>
+    </test>
+
+</suite>

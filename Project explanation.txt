@@ -1,3 +1,5 @@
+
+
 The one of the idea for test failure was creating attachment for Allure report, that would say the name of the test,
 the description and the error message. For the tool of that realization I choose the TestListner concept of TestNG. But
 because of Allure addAtachment() method did not work properly and failed to add attachment in case of test failure.
