@@ -1,7 +1,37 @@
+The goal for this project was:
+-automate testing of API calls. To verify real results with expected.
+-use pattern to be able to scale project in the future
+-To have ability independently run specific group of tests or all together
+-use logs
+-To build the Allure report with attachments
+-To run the project in a docker container.
 
+For that I use:
+
+0) TestNG library
+    implement TestListener concept
+    parameterized test
+    configuration .xml file
+1) Rest Assured library to test the API https://reqres.in/
+    request specification - global variable
+    restAssured filter
+2) Service Object pattern
+3) Allure report
+    add Allure filter for HTTP ditails attachment
+    To see the report type in terminal - cd target -> allure serve
+4) Log4j2 library for logging with log2j2.xml config file.
+    console output
+    file output - logs/app.log
+5) Docker
+    dockerfile
+    docker-compose
+6) Surefire-plugin for running in terminal
+
+To run the project: mvn clean test -Dfilename=TestNGxmlFiles/AllTests
 
 The one of the idea for test failure was creating attachment for Allure report, that would say the name of the test,
-the description and the error message. For the tool of that realization I choose the TestListner concept of TestNG. But
+the description and the error message.
+For the tool of that realization I choose the TestListner concept of TestNG. But
 because of Allure addAtachment() method did not work properly and failed to add attachment in case of test failure.
 I implemented TestLifecycleListener interface of the Allure API with beforeTestStop() method, but I realize that there
 nothing that I really need or want to attach. Since I am using Allure filter I already have in the report attachments of HTTP
